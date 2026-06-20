@@ -1,8 +1,27 @@
 resource "aws_route53domains_domain" "domain" {
-  domain_name       = var.domain_name
+  domain_name       = local.domain_name
   duration_in_years = 1
   auto_renew        = true
   transfer_lock     = true
+
+  name_server = [
+    {
+      name     = "ns-1508.awsdns-60.org"
+      glue_ips = []
+    },
+    {
+      name     = "ns-1797.awsdns-32.co.uk"
+      glue_ips = []
+    },
+    {
+      name     = "ns-327.awsdns-40.com"
+      glue_ips = []
+    },
+    {
+      name     = "ns-515.awsdns-00.net"
+      glue_ips = []
+    },
+  ]
 
   admin_privacy      = true
   billing_privacy    = true
@@ -57,5 +76,12 @@ resource "aws_route53domains_domain" "domain" {
     fax               = null
   }
 
-  tags = local.tags
+  tags = {
+    ManagedBy  = "Terraform"
+    Repository = "ogadra-net"
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }

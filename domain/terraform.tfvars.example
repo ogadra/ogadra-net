@@ -1,0 +1,13 @@
+domain_contact = {
+  contact_type   = "PERSON"
+  first_name     = "Taro"
+  last_name      = "Yamada"
+  address_line_1 = "1-1-1 Example"
+  address_line_2 = ""
+  city           = "Chiyoda-ku"
+  state          = "JP-13"
+  country_code   = "JP"
+  zip_code       = "100-0001"
+  phone_number   = "+81.312345678"
+  email          = "admin@example.com"
+}
