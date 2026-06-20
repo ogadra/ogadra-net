@@ -6,19 +6,19 @@ resource "aws_route53domains_domain" "domain" {
 
   name_server = [
     {
-      name     = "ns-1508.awsdns-60.org"
+      name     = "ns-1383.awsdns-44.org"
       glue_ips = []
     },
     {
-      name     = "ns-1797.awsdns-32.co.uk"
+      name     = "ns-1824.awsdns-36.co.uk"
       glue_ips = []
     },
     {
-      name     = "ns-327.awsdns-40.com"
+      name     = "ns-564.awsdns-06.net"
       glue_ips = []
     },
     {
-      name     = "ns-515.awsdns-00.net"
+      name     = "ns-430.awsdns-53.com"
       glue_ips = []
     },
   ]
