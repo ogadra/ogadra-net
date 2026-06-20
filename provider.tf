@@ -10,6 +10,13 @@ terraform {
 }
 
 provider "aws" {
+  alias   = "prd"
   region  = "us-east-1"
   profile = "prd"
+}
+
+provider "aws" {
+  alias   = "stg"
+  region  = "us-east-1"
+  profile = "stg"
 }
