@@ -1,8 +1,8 @@
 resource "aws_acm_certificate" "apne1" {
   provider = aws.apne1
 
-  domain_name               = "ap-northeast-1.${var.domain_name}"
-  subject_alternative_names = ["*.ap-northeast-1.${var.domain_name}"]
+  domain_name               = var.domain_name
+  subject_alternative_names = ["*.${var.domain_name}"]
   validation_method         = "DNS"
   tags                      = local.tags
 
