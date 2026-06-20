@@ -1,5 +1,5 @@
 variable "domain_name" {
-  description = "Domain name for DNS records."
+  description = "Domain name for the hosted zone."
   type        = string
 
   validation {
@@ -9,11 +9,6 @@ variable "domain_name" {
 
   validation {
     condition     = can(regex("^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,63}$", var.domain_name))
-    error_message = "Domain name must be a valid FQDN (e.g., example.com)."
+    error_message = "Domain name must be a valid FQDN (e.g., demo.example.com)."
   }
-}
-
-variable "demo_ns_name_servers" {
-  description = "Name servers for demo subdomain NS delegation."
-  type        = list(string)
 }
