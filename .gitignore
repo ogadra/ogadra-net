@@ -1,0 +1,17 @@
+.direnv/
+.env
+!.env.example
+.gitleaks.toml
+.terraform/
+terraform.tfstate
+terraform.tfstate.*
+crash.log
+crash.*.log
+*.tfplan
+terraform.tfvars
+*.local.tfvars
+result
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json

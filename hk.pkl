@@ -1,0 +1,66 @@
+amends "package://github.com/jdx/hk/releases/download/v1.48.0/hk@1.48.0#/Config.pkl"
+
+local terraform = new Mapping<String, Step> {
+  ["terraform-fmt"] {
+    glob = List("*.tf", "*.tfvars", "**/*.tf", "**/*.tfvars")
+    check = "terraform fmt -check -diff {{files}}"
+    fix = "terraform fmt {{files}}"
+  }
+
+  ["tflint"] {
+    glob = List("*.tf", "**/*.tf")
+    check = "tflint --chdir=."
+  }
+
+  ["terraform-validate"] {
+    glob = List("*.tf", "**/*.tf")
+    check = "terraform init -backend=false -input=false >/dev/null && terraform validate -no-color"
+    exclusive = true
+  }
+}
+
+local nix = new Mapping<String, Step> {
+  ["nixfmt"] {
+    glob = List("*.nix")
+    check = "nixfmt --check {{files}}"
+    fix = "nixfmt {{files}}"
+  }
+}
+
+local security = new Mapping<String, Step> {
+  ["checkov"] {
+    glob = List("*.tf", "*.tfvars", "**/*.tfvars", "**/*.tf")
+    check = "checkov -d . --framework terraform --quiet"
+  }
+
+  ["trivy"] {
+    glob = List("*.tf", "*.tfvars", "**/*.tf", "**/*.tfvars")
+    check = "trivy config --quiet --exit-code 1 --skip-dirs .terraform ."
+  }
+}
+
+hooks {
+  ["pre-commit"] {
+    fix = true
+    stash = "git"
+    steps {
+      ...terraform
+      ...nix
+      ...security
+      ["gitleaks"] {
+        check = "gitleaks git --staged --redact"
+      }
+    }
+  }
+
+  ["check"] {
+    steps {
+      ...terraform
+      ...nix
+      ...security
+      ["gitleaks"] {
+        check = "gitleaks detect --source . --redact"
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+default_permissions = "workspace-private"
+
+[permissions.workspace-private]
+extends = ":workspace"
+
+[permissions.workspace-private.filesystem]
+glob_scan_max_depth = 6
+
+[permissions.workspace-private.filesystem.":workspace_roots"]
+".direnv" = "deny"
+".env" = "deny"
+".gitleaks.toml" = "deny"
+".terraform" = "deny"
+"terraform.tfstate" = "deny"
+"terraform.tfstate.*" = "deny"
+"*.tfplan" = "deny"
+"terraform.tfvars" = "deny"
+"*.local.tfvars" = "deny"
+"result" = "deny"
+"override.tf" = "deny"
+"override.tf.json" = "deny"
+"*_override.tf" = "deny"
+"*_override.tf.json" = "deny"
