@@ -29,5 +29,12 @@ provider "google" {
   alias   = "prd"
   project = var.google_prd_project_id
 
-  impersonate_service_account = local.google_prd_impersonate_service_account
+  impersonate_service_account = local.google_prd_impersonate_service_account_email
+}
+
+provider "google" {
+  alias   = "stg"
+  project = var.google_stg_project_id
+
+  impersonate_service_account = local.google_stg_impersonate_service_account_email
 }

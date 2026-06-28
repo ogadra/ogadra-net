@@ -5,9 +5,10 @@ module "aws_prd" {
   domain_ns_name_servers = local.domain_ns_name_servers
 
   stg_domain_name     = local.stg_domain_name
-  stg_ns_name_servers = module.aws_stg.name_servers
+  stg_ns_name_servers = local.stg_ns_name_servers
 
-  prd_domain_name = local.prd_domain_name
+  prd_domain_name     = local.prd_domain_name
+  prd_ns_name_servers = module.google_prd.name_servers
 
   providers = {
     aws = aws.prd
@@ -31,12 +32,22 @@ module "google_prd" {
   domain_ns_name_servers = local.domain_ns_name_servers
 
   stg_domain_name     = local.stg_domain_name
-  stg_ns_name_servers = module.aws_stg.name_servers
+  stg_ns_name_servers = local.stg_ns_name_servers
 
   prd_domain_name     = local.prd_domain_name
   prd_ns_name_servers = module.aws_prd.name_servers
 
   providers = {
     google = google.prd
+  }
+}
+
+module "google_stg" {
+  source = "./modules/google-stg"
+
+  domain_name = local.stg_domain_name
+
+  providers = {
+    google = google.stg
   }
 }

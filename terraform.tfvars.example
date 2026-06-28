@@ -1,2 +1,4 @@
-google_prd_project_id       = ""
-impersonate_service_account = ""
+google_prd_project_id                  = ""
+google_stg_project_id                  = ""
+google_prd_impersonate_service_account = ""
+google_stg_impersonate_service_account = ""

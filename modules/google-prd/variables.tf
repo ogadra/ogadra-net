@@ -74,7 +74,7 @@ variable "prd_domain_name" {
 }
 
 variable "prd_ns_name_servers" {
-  description = "Name servers for production subdomain NS delegation (minimum 2 required by DNS)."
+  description = "Additional name servers for production subdomain NS delegation."
   type        = list(string)
 
   validation {
