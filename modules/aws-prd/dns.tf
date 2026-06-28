@@ -30,11 +30,21 @@ resource "aws_route53_zone" "bunshin" {
   tags = local.tags
 }
 
+resource "aws_route53_record" "bunshin_zone_ns" {
+  allow_overwrite = true
+  zone_id         = aws_route53_zone.bunshin.zone_id
+  name            = var.prd_domain_name
+  type            = "NS"
+  ttl             = 60
+
+  records = concat(aws_route53_zone.bunshin.name_servers, var.prd_ns_name_servers)
+}
+
 resource "aws_route53_record" "bunshin_ns" {
   zone_id = data.aws_route53_zone.domain.zone_id
   name    = var.prd_domain_name
   type    = "NS"
   ttl     = 60
 
-  records = aws_route53_zone.bunshin.name_servers
+  records = concat(aws_route53_zone.bunshin.name_servers, var.prd_ns_name_servers)
 }

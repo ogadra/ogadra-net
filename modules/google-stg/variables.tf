@@ -1,5 +1,5 @@
 variable "domain_name" {
-  description = "Domain name for the hosted zone."
+  description = "Domain name for the managed zone."
   type        = string
 
   validation {
@@ -11,6 +11,15 @@ variable "domain_name" {
     condition     = can(regex("^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,63}$", var.domain_name))
     error_message = "Domain name must be a valid FQDN (e.g., demo.example.com)."
   }
+}
+
+variable "acm_validation_records" {
+  description = "ACM DNS validation records for this zone."
+  type = map(object({
+    name   = string
+    type   = string
+    rrdata = string
+  }))
 }
 
 variable "peer_ns_name_servers" {

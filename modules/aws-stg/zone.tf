@@ -5,3 +5,13 @@ resource "aws_route53_zone" "zone" {
 
   tags = local.tags
 }
+
+resource "aws_route53_record" "zone_ns" {
+  allow_overwrite = true
+  zone_id         = aws_route53_zone.zone.zone_id
+  name            = var.domain_name
+  type            = "NS"
+  ttl             = 60
+
+  records = concat(aws_route53_zone.zone.name_servers, var.peer_ns_name_servers)
+}
