@@ -1,5 +1,6 @@
 data "aws_route53_zone" "domain" {
-  name = var.domain_name
+  name         = var.domain_name
+  private_zone = false
 }
 
 resource "aws_route53_record" "domain_ns" {
@@ -9,7 +10,7 @@ resource "aws_route53_record" "domain_ns" {
   type            = "NS"
   ttl             = 60
 
-  records = data.aws_route53_zone.domain.name_servers
+  records = var.domain_ns_name_servers
 }
 
 resource "aws_route53_record" "demo_ns" {

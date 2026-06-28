@@ -21,7 +21,7 @@ resource "google_dns_record_set" "zone_ns" {
   name         = google_dns_managed_zone.zone.dns_name
   type         = "NS"
   ttl          = 60
-  rrdatas      = google_dns_managed_zone.zone.name_servers
+  rrdatas      = [for name_server in var.domain_ns_name_servers : "${trimsuffix(name_server, ".")}."]
 
   deletion_policy = "PREVENT"
 

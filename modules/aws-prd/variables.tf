@@ -13,6 +13,16 @@ variable "domain_name" {
   }
 }
 
+variable "domain_ns_name_servers" {
+  description = "Name servers for apex NS records."
+  type        = list(string)
+
+  validation {
+    condition     = length(var.domain_ns_name_servers) > 0 && length(var.domain_ns_name_servers) <= 6
+    error_message = "Apex NS name servers must contain between 1 and 6 entries."
+  }
+}
+
 variable "stg_domain_name" {
   description = "Staging subdomain name for NS delegation."
   type        = string

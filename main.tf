@@ -1,7 +1,8 @@
 module "aws_prd" {
   source = "./modules/aws-prd"
 
-  domain_name = local.domain_name
+  domain_name            = local.domain_name
+  domain_ns_name_servers = local.domain_ns_name_servers
 
   stg_domain_name     = local.stg_domain_name
   stg_ns_name_servers = module.aws_stg.name_servers
@@ -26,7 +27,8 @@ module "aws_stg" {
 module "google_prd" {
   source = "./modules/google-prd"
 
-  domain_name = local.domain_name
+  domain_name            = local.domain_name
+  domain_ns_name_servers = local.domain_ns_name_servers
 
   stg_domain_name     = local.stg_domain_name
   stg_ns_name_servers = module.aws_stg.name_servers
