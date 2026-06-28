@@ -1,8 +1,12 @@
 module "aws_prd" {
   source = "./modules/aws-prd"
 
-  domain_name          = local.domain_name
-  demo_ns_name_servers = module.aws_stg.name_servers
+  domain_name = local.domain_name
+
+  stg_domain_name     = local.stg_domain_name
+  stg_ns_name_servers = module.aws_stg.name_servers
+
+  prd_domain_name = local.prd_domain_name
 
   providers = {
     aws = aws.prd
@@ -12,7 +16,7 @@ module "aws_prd" {
 module "aws_stg" {
   source = "./modules/aws-stg"
 
-  domain_name = "demo.${local.domain_name}"
+  domain_name = local.stg_domain_name
 
   providers = {
     aws = aws.stg

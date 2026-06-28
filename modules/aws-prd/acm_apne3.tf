@@ -1,8 +1,8 @@
 resource "aws_acm_certificate" "bunshin_apne3" {
   provider = aws.apne3
 
-  domain_name               = local.bunshin_domain_name
-  subject_alternative_names = ["*.${local.bunshin_domain_name}"]
+  domain_name               = var.prd_domain_name
+  subject_alternative_names = ["*.${var.prd_domain_name}"]
   validation_method         = "DNS"
   tags                      = local.tags
 
