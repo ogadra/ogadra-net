@@ -34,7 +34,7 @@ resource "google_dns_record_set" "stg_ns" {
   managed_zone = google_dns_managed_zone.zone.name
   name         = "${trimsuffix(var.stg_domain_name, ".")}."
   type         = "NS"
-  ttl          = 0
+  ttl          = 60
   rrdatas      = formatlist("%s.", var.stg_ns_name_servers)
 
   deletion_policy = "PREVENT"
@@ -48,7 +48,7 @@ resource "google_dns_record_set" "prd_ns" {
   managed_zone = google_dns_managed_zone.zone.name
   name         = "${trimsuffix(var.prd_domain_name, ".")}."
   type         = "NS"
-  ttl          = 0
+  ttl          = 60
   rrdatas      = formatlist("%s.", var.prd_ns_name_servers)
 
   deletion_policy = "PREVENT"
