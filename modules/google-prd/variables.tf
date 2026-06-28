@@ -14,12 +14,17 @@ variable "domain_name" {
 }
 
 variable "domain_ns_name_servers" {
-  description = "Name servers for apex NS records."
+  description = "Name servers for apex NS records (minimum 2 required by DNS)."
   type        = list(string)
 
   validation {
-    condition     = length(var.domain_ns_name_servers) > 0 && length(var.domain_ns_name_servers) <= 6
-    error_message = "Apex NS name servers must contain between 1 and 6 entries."
+    condition     = length(var.domain_ns_name_servers) >= 2 && length(var.domain_ns_name_servers) <= 6
+    error_message = "Apex NS name servers must contain between 2 and 6 entries."
+  }
+
+  validation {
+    condition     = alltrue([for ns in var.domain_ns_name_servers : can(regex("^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,63}\\.?$", ns))])
+    error_message = "Each apex NS entry must be a valid FQDN (e.g., ns-1.example.com)."
   }
 }
 
@@ -39,8 +44,18 @@ variable "stg_domain_name" {
 }
 
 variable "stg_ns_name_servers" {
-  description = "Name servers for staging subdomain NS delegation."
+  description = "Name servers for staging subdomain NS delegation (minimum 2 required by DNS)."
   type        = list(string)
+
+  validation {
+    condition     = length(var.stg_ns_name_servers) >= 2
+    error_message = "Staging NS name servers must contain at least 2 entries."
+  }
+
+  validation {
+    condition     = alltrue([for ns in var.stg_ns_name_servers : can(regex("^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,63}\\.?$", ns))])
+    error_message = "Each staging NS entry must be a valid FQDN (e.g., ns-1.example.com)."
+  }
 }
 
 variable "prd_domain_name" {
@@ -59,6 +74,16 @@ variable "prd_domain_name" {
 }
 
 variable "prd_ns_name_servers" {
-  description = "Name servers for production subdomain NS delegation."
+  description = "Name servers for production subdomain NS delegation (minimum 2 required by DNS)."
   type        = list(string)
+
+  validation {
+    condition     = length(var.prd_ns_name_servers) >= 2
+    error_message = "Production NS name servers must contain at least 2 entries."
+  }
+
+  validation {
+    condition     = alltrue([for ns in var.prd_ns_name_servers : can(regex("^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,63}\\.?$", ns))])
+    error_message = "Each production NS entry must be a valid FQDN (e.g., ns-1.example.com)."
+  }
 }
