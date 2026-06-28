@@ -72,6 +72,20 @@ resource "google_dns_managed_zone" "bunshin" {
   }
 }
 
+resource "google_dns_record_set" "bunshin_zone_ns" {
+  managed_zone = google_dns_managed_zone.bunshin.name
+  name         = google_dns_managed_zone.bunshin.dns_name
+  type         = "NS"
+  ttl          = 60
+  rrdatas      = [for name_server in concat(google_dns_managed_zone.bunshin.name_servers, var.prd_ns_name_servers) : "${trimsuffix(name_server, ".")}."]
+
+  deletion_policy = "PREVENT"
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
 resource "google_dns_record_set" "prd_ns" {
   managed_zone = google_dns_managed_zone.zone.name
   name         = "${trimsuffix(var.prd_domain_name, ".")}."

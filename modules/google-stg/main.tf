@@ -16,6 +16,20 @@ resource "google_dns_managed_zone" "zone" {
   }
 }
 
+resource "google_dns_record_set" "zone_ns" {
+  managed_zone = google_dns_managed_zone.zone.name
+  name         = google_dns_managed_zone.zone.dns_name
+  type         = "NS"
+  ttl          = 60
+  rrdatas      = [for name_server in concat(google_dns_managed_zone.zone.name_servers, var.peer_ns_name_servers) : "${trimsuffix(name_server, ".")}."]
+
+  deletion_policy = "PREVENT"
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
 resource "google_dns_record_set" "acm_validation" {
   for_each = var.acm_validation_records
 

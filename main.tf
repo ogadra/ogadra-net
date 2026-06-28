@@ -18,7 +18,8 @@ module "aws_prd" {
 module "aws_stg" {
   source = "./modules/aws-stg"
 
-  domain_name = local.stg_domain_name
+  domain_name          = local.stg_domain_name
+  peer_ns_name_servers = module.google_stg.name_servers
 
   providers = {
     aws = aws.stg
@@ -48,6 +49,7 @@ module "google_stg" {
 
   domain_name            = local.stg_domain_name
   acm_validation_records = module.aws_stg.acm_validation_records
+  peer_ns_name_servers   = module.aws_stg.name_servers
 
   providers = {
     google = google.stg
