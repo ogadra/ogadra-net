@@ -4,24 +4,7 @@ resource "aws_route53domains_domain" "domain" {
   auto_renew        = true
   transfer_lock     = true
 
-  name_server = [
-    {
-      name     = "ns-1383.awsdns-44.org"
-      glue_ips = []
-    },
-    {
-      name     = "ns-1824.awsdns-36.co.uk"
-      glue_ips = []
-    },
-    {
-      name     = "ns-564.awsdns-06.net"
-      glue_ips = []
-    },
-    {
-      name     = "ns-430.awsdns-53.com"
-      glue_ips = []
-    },
-  ]
+  name_server = local.domain_name_servers
 
   admin_privacy      = true
   billing_privacy    = true

@@ -27,6 +27,7 @@
           awscli2
           checkov
           gitleaks
+          google-cloud-sdk
           hk.packages.${system}.default
           nixfmt
           terraform

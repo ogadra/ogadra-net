@@ -59,7 +59,7 @@ variable "stg_ns_name_servers" {
 }
 
 variable "prd_domain_name" {
-  description = "Production subdomain name for the hosted zone."
+  description = "Production subdomain name for NS delegation."
   type        = string
 
   validation {
@@ -70,5 +70,20 @@ variable "prd_domain_name" {
   validation {
     condition     = can(regex("^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,63}$", var.prd_domain_name))
     error_message = "Production domain name must be a valid FQDN (e.g., bunshin.example.com)."
+  }
+}
+
+variable "prd_ns_name_servers" {
+  description = "Name servers for production subdomain NS delegation (minimum 2 required by DNS)."
+  type        = list(string)
+
+  validation {
+    condition     = length(var.prd_ns_name_servers) >= 2
+    error_message = "Production NS name servers must contain at least 2 entries."
+  }
+
+  validation {
+    condition     = alltrue([for ns in var.prd_ns_name_servers : can(regex("^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,63}\\.?$", ns))])
+    error_message = "Each production NS entry must be a valid FQDN (e.g., ns-1.example.com)."
   }
 }
