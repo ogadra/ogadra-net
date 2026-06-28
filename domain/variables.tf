@@ -20,3 +20,13 @@ variable "domain_contact" {
     error_message = "state must be an ISO 3166-2 prefecture code (e.g. JP-13), not a prefecture name."
   }
 }
+
+variable "google_prd_project_id" {
+  description = "Google Cloud project ID for production DNS resources."
+  type        = string
+}
+
+variable "impersonate_service_account" {
+  description = "Service account ID for Google provider impersonation."
+  type        = string
+}

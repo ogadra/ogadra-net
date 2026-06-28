@@ -11,3 +11,5 @@ domain_contact = {
   phone_number   = "+81.312345678"
   email          = "admin@example.com"
 }
+google_prd_project_id       = ""
+impersonate_service_account = ""
