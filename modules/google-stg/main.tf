@@ -15,3 +15,13 @@ resource "google_dns_managed_zone" "zone" {
     prevent_destroy = true
   }
 }
+
+resource "google_dns_record_set" "acm_validation" {
+  for_each = var.acm_validation_records
+
+  managed_zone = google_dns_managed_zone.zone.name
+  name         = "${trimsuffix(each.value.name, ".")}."
+  type         = each.value.type
+  ttl          = 60
+  rrdatas      = ["${trimsuffix(each.value.rrdata, ".")}."]
+}

@@ -30,6 +30,7 @@ module "google_prd" {
 
   domain_name            = local.domain_name
   domain_ns_name_servers = local.domain_ns_name_servers
+  acm_validation_records = module.aws_prd.acm_validation_records
 
   stg_domain_name     = local.stg_domain_name
   stg_ns_name_servers = local.stg_ns_name_servers
@@ -45,7 +46,8 @@ module "google_prd" {
 module "google_stg" {
   source = "./modules/google-stg"
 
-  domain_name = local.stg_domain_name
+  domain_name            = local.stg_domain_name
+  acm_validation_records = module.aws_stg.acm_validation_records
 
   providers = {
     google = google.stg

@@ -28,6 +28,15 @@ variable "domain_ns_name_servers" {
   }
 }
 
+variable "acm_validation_records" {
+  description = "ACM DNS validation records for the production subdomain."
+  type = map(object({
+    name   = string
+    type   = string
+    rrdata = string
+  }))
+}
+
 variable "stg_domain_name" {
   description = "Staging subdomain name for NS delegation."
   type        = string

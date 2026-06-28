@@ -12,3 +12,12 @@ variable "domain_name" {
     error_message = "Domain name must be a valid FQDN (e.g., demo.example.com)."
   }
 }
+
+variable "acm_validation_records" {
+  description = "ACM DNS validation records for this zone."
+  type = map(object({
+    name   = string
+    type   = string
+    rrdata = string
+  }))
+}
