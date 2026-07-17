@@ -1,44 +1,37 @@
+locals {
+  ns_records = {
+    apex = {
+      domain       = var.domain_name
+      name_servers = [for ns in var.domain_ns_name_servers : trimsuffix(ns, ".")]
+    }
+    stg = {
+      domain       = var.stg_domain_name
+      name_servers = [for ns in var.stg_ns_name_servers : trimsuffix(ns, ".")]
+    }
+    prd = {
+      domain       = var.prd_domain_name
+      name_servers = [for ns in var.prd_ns_name_servers : trimsuffix(ns, ".")]
+    }
+  }
+
+  ns1_name_servers = split(",", ns1_zone.zone.dns_servers)
+}
+
 resource "ns1_zone" "zone" {
-  zone                   = trimsuffix(var.domain_name, ".")
+  zone                   = var.domain_name
   autogenerate_ns_record = false
 }
 
-resource "ns1_record" "zone_ns" {
+resource "ns1_record" "ns" {
+  for_each = local.ns_records
+
   zone   = ns1_zone.zone.zone
-  domain = ns1_zone.zone.zone
+  domain = each.value.domain
   type   = "NS"
   ttl    = 10
 
   dynamic "answers" {
-    for_each = [for ns in var.domain_ns_name_servers : trimsuffix(ns, ".")]
-    content {
-      answer = answers.value
-    }
-  }
-}
-
-resource "ns1_record" "stg_ns" {
-  zone   = ns1_zone.zone.zone
-  domain = trimsuffix(var.stg_domain_name, ".")
-  type   = "NS"
-  ttl    = 10
-
-  dynamic "answers" {
-    for_each = [for ns in var.stg_ns_name_servers : trimsuffix(ns, ".")]
-    content {
-      answer = answers.value
-    }
-  }
-}
-
-resource "ns1_record" "prd_ns" {
-  zone   = ns1_zone.zone.zone
-  domain = trimsuffix(var.prd_domain_name, ".")
-  type   = "NS"
-  ttl    = 10
-
-  dynamic "answers" {
-    for_each = [for ns in var.prd_ns_name_servers : trimsuffix(ns, ".")]
+    for_each = each.value.name_servers
     content {
       answer = answers.value
     }
