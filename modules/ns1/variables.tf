@@ -44,12 +44,12 @@ variable "stg_domain_name" {
 }
 
 variable "stg_ns_name_servers" {
-  description = "Name servers for staging subdomain NS delegation (minimum 2 required by DNS)."
+  description = "Name servers for staging subdomain NS delegation."
   type        = list(string)
 
   validation {
-    condition     = length(var.stg_ns_name_servers) >= 2
-    error_message = "Staging NS name servers must contain at least 2 entries."
+    condition     = length(var.stg_ns_name_servers) >= 2 && length(var.stg_ns_name_servers) <= 6
+    error_message = "Staging NS name servers must contain between 2 and 6 entries."
   }
 
   validation {
@@ -74,12 +74,12 @@ variable "prd_domain_name" {
 }
 
 variable "prd_ns_name_servers" {
-  description = "Name servers for production subdomain NS delegation (minimum 2 required by DNS)."
+  description = "Name servers for production subdomain NS delegation."
   type        = list(string)
 
   validation {
-    condition     = length(var.prd_ns_name_servers) >= 2
-    error_message = "Production NS name servers must contain at least 2 entries."
+    condition     = length(var.prd_ns_name_servers) >= 2 && length(var.prd_ns_name_servers) <= 6
+    error_message = "Production NS name servers must contain between 2 and 6 entries."
   }
 
   validation {
