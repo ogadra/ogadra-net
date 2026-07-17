@@ -2,7 +2,7 @@ module "aws_prd" {
   source = "./modules/aws-prd"
 
   domain_name            = local.domain_name
-  domain_ns_name_servers = local.domain_ns_name_servers
+  peer_apex_name_servers = module.ns1.apex_name_servers
 
   stg_domain_name     = local.stg_domain_name
   stg_ns_name_servers = module.aws_stg.name_servers
@@ -28,7 +28,7 @@ module "ns1" {
   source = "./modules/ns1"
 
   domain_name            = local.domain_name
-  domain_ns_name_servers = local.domain_ns_name_servers
+  peer_apex_name_servers = module.aws_prd.apex_name_servers
 
   stg_domain_name     = local.stg_domain_name
   stg_ns_name_servers = module.aws_stg.name_servers
