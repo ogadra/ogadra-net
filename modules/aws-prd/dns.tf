@@ -1,6 +1,13 @@
 data "aws_route53_zone" "domain" {
   name         = var.domain_name
   private_zone = false
+
+  lifecycle {
+    postcondition {
+      condition     = length(self.name_servers) >= 3
+      error_message = "AWS Route53 hosted zone must expose at least 3 name servers for apex mirror."
+    }
+  }
 }
 
 resource "aws_route53_record" "domain_ns" {
@@ -10,7 +17,14 @@ resource "aws_route53_record" "domain_ns" {
   type            = "NS"
   ttl             = 10
 
-  records = local.apex_ns_answers
+  records = local.apex_ns_name_servers
+
+  lifecycle {
+    precondition {
+      condition     = length(distinct(local.apex_ns_name_servers)) == length(local.apex_ns_name_servers)
+      error_message = "Apex NS RRset must not contain duplicate name servers between own and peer authoritatives."
+    }
+  }
 }
 
 resource "aws_route53_record" "demo_ns" {
