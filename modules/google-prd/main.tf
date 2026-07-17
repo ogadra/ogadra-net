@@ -4,15 +4,11 @@ resource "google_dns_managed_zone" "zone" {
   name     = replace(trimsuffix(var.domain_name, "."), ".", "-")
   dns_name = "${trimsuffix(var.domain_name, ".")}."
 
-  deletion_policy = "PREVENT"
+  deletion_policy = "DELETE"
 
   labels = {
     managed_by = "terraform"
     repository = "ogadra-net"
-  }
-
-  lifecycle {
-    prevent_destroy = true
   }
 }
 
@@ -23,11 +19,7 @@ resource "google_dns_record_set" "zone_ns" {
   ttl          = 60
   rrdatas      = [for name_server in var.domain_ns_name_servers : "${trimsuffix(name_server, ".")}."]
 
-  deletion_policy = "PREVENT"
-
-  lifecycle {
-    prevent_destroy = true
-  }
+  deletion_policy = "DELETE"
 }
 
 resource "google_dns_record_set" "stg_ns" {
@@ -37,11 +29,7 @@ resource "google_dns_record_set" "stg_ns" {
   ttl          = 60
   rrdatas      = formatlist("%s.", var.stg_ns_name_servers)
 
-  deletion_policy = "PREVENT"
-
-  lifecycle {
-    prevent_destroy = true
-  }
+  deletion_policy = "DELETE"
 }
 
 resource "google_dns_record_set" "prd_ns" {
@@ -51,9 +39,5 @@ resource "google_dns_record_set" "prd_ns" {
   ttl          = 60
   rrdatas      = formatlist("%s.", var.prd_ns_name_servers)
 
-  deletion_policy = "PREVENT"
-
-  lifecycle {
-    prevent_destroy = true
-  }
+  deletion_policy = "DELETE"
 }
