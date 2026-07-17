@@ -8,7 +8,7 @@ resource "aws_route53_record" "domain_ns" {
   zone_id         = data.aws_route53_zone.domain.zone_id
   name            = var.domain_name
   type            = "NS"
-  ttl             = 60
+  ttl             = 10
 
   records = var.domain_ns_name_servers
 }
@@ -17,7 +17,7 @@ resource "aws_route53_record" "demo_ns" {
   zone_id = data.aws_route53_zone.domain.zone_id
   name    = var.stg_domain_name
   type    = "NS"
-  ttl     = 60
+  ttl     = 10
 
   records = var.stg_ns_name_servers
 }
@@ -34,7 +34,7 @@ resource "aws_route53_record" "bunshin_ns" {
   zone_id = data.aws_route53_zone.domain.zone_id
   name    = var.prd_domain_name
   type    = "NS"
-  ttl     = 60
+  ttl     = 10
 
   records = aws_route53_zone.bunshin.name_servers
 }
