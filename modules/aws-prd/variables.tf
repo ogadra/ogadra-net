@@ -23,6 +23,11 @@ variable "peer_apex_name_servers" {
   }
 
   validation {
+    condition     = length(distinct(var.peer_apex_name_servers)) == length(var.peer_apex_name_servers)
+    error_message = "Peer apex name servers must not contain duplicates."
+  }
+
+  validation {
     condition     = alltrue([for ns in var.peer_apex_name_servers : can(regex("^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,63}\\.?$", ns))])
     error_message = "Each peer apex name server must be a valid FQDN (e.g., ns-1.example.com)."
   }
