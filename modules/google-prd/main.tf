@@ -77,7 +77,7 @@ resource "google_dns_record_set" "bunshin_zone_ns" {
   name         = google_dns_managed_zone.bunshin.dns_name
   type         = "NS"
   ttl          = 60
-  rrdatas      = [for name_server in concat(google_dns_managed_zone.bunshin.name_servers, var.prd_ns_name_servers) : "${trimsuffix(name_server, ".")}."]
+  rrdatas      = [for name_server in concat(google_dns_managed_zone.bunshin.name_servers, var.peer_ns_name_servers) : "${trimsuffix(name_server, ".")}."]
 
   deletion_policy = "PREVENT"
 
@@ -92,7 +92,7 @@ resource "google_dns_record_set" "prd_ns" {
   type         = "NS"
   ttl          = 60
   rrdatas = [
-    for name_server in concat(google_dns_managed_zone.bunshin.name_servers, var.prd_ns_name_servers) : "${trimsuffix(name_server, ".")}."
+    for name_server in concat(google_dns_managed_zone.bunshin.name_servers, var.peer_ns_name_servers) : "${trimsuffix(name_server, ".")}."
   ]
 
   deletion_policy = "PREVENT"

@@ -37,7 +37,7 @@ resource "aws_route53_record" "bunshin_zone_ns" {
   type            = "NS"
   ttl             = 60
 
-  records = concat(aws_route53_zone.bunshin.name_servers, var.prd_ns_name_servers)
+  records = concat(aws_route53_zone.bunshin.name_servers, var.peer_ns_name_servers)
 }
 
 resource "aws_route53_record" "bunshin_ns" {
@@ -46,5 +46,5 @@ resource "aws_route53_record" "bunshin_ns" {
   type    = "NS"
   ttl     = 60
 
-  records = concat(aws_route53_zone.bunshin.name_servers, var.prd_ns_name_servers)
+  records = concat(aws_route53_zone.bunshin.name_servers, var.peer_ns_name_servers)
 }
