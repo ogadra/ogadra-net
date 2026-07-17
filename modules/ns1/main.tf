@@ -1,8 +1,14 @@
 locals {
+  ns1_name_servers = split(",", ns1_zone.zone.dns_servers)
+
+  own_apex_name_servers = slice(sort([
+    for name_server in local.ns1_name_servers : trimsuffix(name_server, ".")
+  ]), 0, 3)
+
   ns_records = {
     apex = {
       domain       = var.domain_name
-      name_servers = [for ns in var.domain_ns_name_servers : trimsuffix(ns, ".")]
+      name_servers = concat(local.own_apex_name_servers, var.peer_apex_name_servers)
     }
     stg = {
       domain       = var.stg_domain_name
@@ -13,8 +19,6 @@ locals {
       name_servers = [for ns in var.prd_ns_name_servers : trimsuffix(ns, ".")]
     }
   }
-
-  ns1_name_servers = split(",", ns1_zone.zone.dns_servers)
 }
 
 resource "ns1_zone" "zone" {

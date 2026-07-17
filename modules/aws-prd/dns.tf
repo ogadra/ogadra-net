@@ -10,7 +10,7 @@ resource "aws_route53_record" "domain_ns" {
   type            = "NS"
   ttl             = 10
 
-  records = var.domain_ns_name_servers
+  records = local.apex_ns_answers
 }
 
 resource "aws_route53_record" "demo_ns" {

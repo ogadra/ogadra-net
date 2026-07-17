@@ -13,18 +13,18 @@ variable "domain_name" {
   }
 }
 
-variable "domain_ns_name_servers" {
-  description = "Name servers for apex NS records (minimum 2 required by DNS)."
+variable "peer_apex_name_servers" {
+  description = "Peer authoritative name servers to mirror into this zone's apex NS RRset."
   type        = list(string)
 
   validation {
-    condition     = length(var.domain_ns_name_servers) >= 2 && length(var.domain_ns_name_servers) <= 6
-    error_message = "Apex NS name servers must contain between 2 and 6 entries."
+    condition     = length(var.peer_apex_name_servers) >= 1 && length(var.peer_apex_name_servers) <= 3
+    error_message = "Peer apex name servers must contain between 1 and 3 entries."
   }
 
   validation {
-    condition     = alltrue([for ns in var.domain_ns_name_servers : can(regex("^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,63}\\.?$", ns))])
-    error_message = "Each apex NS entry must be a valid FQDN (e.g., ns-1.example.com)."
+    condition     = alltrue([for ns in var.peer_apex_name_servers : can(regex("^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,63}\\.?$", ns))])
+    error_message = "Each peer apex name server must be a valid FQDN (e.g., ns-1.example.com)."
   }
 }
 

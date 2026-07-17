@@ -1,4 +1,4 @@
-output "name_servers" {
-  description = "NS1 name servers for the domain zone."
-  value       = local.ns1_name_servers
+output "apex_name_servers" {
+  description = "Top 3 sorted NS1 name servers of the apex zone."
+  value       = local.own_apex_name_servers
 }
