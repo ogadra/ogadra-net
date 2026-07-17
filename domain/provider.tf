@@ -6,9 +6,9 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 6.0"
     }
-    google = {
-      source  = "hashicorp/google"
-      version = "~> 7.38"
+    ns1 = {
+      source  = "ns1-terraform/ns1"
+      version = "~> 2.9"
     }
   }
 }
@@ -18,9 +18,4 @@ provider "aws" {
   profile = "prd"
 }
 
-provider "google" {
-  alias   = "prd"
-  project = var.google_prd_project_id
-
-  impersonate_service_account = local.google_prd_impersonate_service_account
-}
+provider "ns1" {}

@@ -24,8 +24,8 @@ module "aws_stg" {
   }
 }
 
-module "google_prd" {
-  source = "./modules/google-prd"
+module "ns1" {
+  source = "./modules/ns1"
 
   domain_name            = local.domain_name
   domain_ns_name_servers = local.domain_ns_name_servers
@@ -35,8 +35,4 @@ module "google_prd" {
 
   prd_domain_name     = local.prd_domain_name
   prd_ns_name_servers = module.aws_prd.name_servers
-
-  providers = {
-    google = google.prd
-  }
 }

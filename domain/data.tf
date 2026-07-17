@@ -3,7 +3,6 @@ data "aws_route53_zone" "domain" {
   private_zone = false
 }
 
-data "google_dns_managed_zone" "domain" {
-  provider = google.prd
-  name     = replace(local.domain_name, ".", "-")
+data "ns1_zone" "domain" {
+  zone = local.domain_name
 }
