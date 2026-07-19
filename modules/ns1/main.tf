@@ -14,7 +14,7 @@ locals {
     }
     stg = {
       domain       = var.stg_domain_name
-      name_servers = [for ns in var.stg_ns_name_servers : trimsuffix(ns, ".")]
+      name_servers = local.stg_apex_ns_name_servers
     }
     prd = {
       domain       = var.prd_domain_name
@@ -52,8 +52,8 @@ resource "ns1_record" "ns" {
 
   lifecycle {
     precondition {
-      condition     = each.key != "apex" || length(distinct(each.value.name_servers)) == length(each.value.name_servers)
-      error_message = "Apex NS RRset must not contain duplicate name servers between own and peer authoritatives."
+      condition     = length(distinct(each.value.name_servers)) == length(each.value.name_servers)
+      error_message = "NS RRset for ${each.key} must not contain duplicate name servers between own and peer authoritatives."
     }
   }
 }
