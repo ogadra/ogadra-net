@@ -1,2 +1,10 @@
-stg_ipv4_address = "192.0.2.1"
-stg_ipv6_address = "2001:db8::1"
+stg_records = {
+  a_record    = "192.0.2.1"
+  aaaa_record = "2001:db8::1"
+  acme_cnames = {
+    apex = {
+      name = "_acme-challenge.demo.example.com."
+      data = "example.4.authorize.certificatemanager.goog."
+    }
+  }
+}

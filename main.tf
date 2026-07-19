@@ -20,8 +20,7 @@ module "aws_stg" {
   domain_name            = local.stg_domain_name
   peer_apex_name_servers = module.ns1.stg_apex_name_servers
 
-  ipv4_address = var.stg_ipv4_address
-  ipv6_address = var.stg_ipv6_address
+  records = var.stg_records
 
   providers = {
     aws = aws.stg
@@ -36,10 +35,8 @@ module "ns1" {
 
   stg_domain_name            = local.stg_domain_name
   stg_peer_apex_name_servers = module.aws_stg.apex_name_servers
+  stg_records                = var.stg_records
 
   prd_domain_name     = local.prd_domain_name
   prd_ns_name_servers = module.aws_prd.name_servers
-
-  stg_ipv4_address = var.stg_ipv4_address
-  stg_ipv6_address = var.stg_ipv6_address
 }

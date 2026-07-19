@@ -26,7 +26,7 @@ resource "ns1_record" "stg_a" {
   ttl    = 300
 
   answers {
-    answer = var.stg_ipv4_address
+    answer = var.stg_records.a_record
   }
 }
 
@@ -37,6 +37,19 @@ resource "ns1_record" "stg_aaaa" {
   ttl    = 300
 
   answers {
-    answer = var.stg_ipv6_address
+    answer = var.stg_records.aaaa_record
+  }
+}
+
+resource "ns1_record" "stg_acme_challenge" {
+  for_each = var.stg_records.acme_cnames
+
+  zone   = ns1_zone.stg.zone
+  domain = each.value.name
+  type   = "CNAME"
+  ttl    = 300
+
+  answers {
+    answer = each.value.data
   }
 }

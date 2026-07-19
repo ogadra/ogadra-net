@@ -22,7 +22,7 @@ resource "aws_route53_record" "apex_a" {
   type    = "A"
   ttl     = 300
 
-  records = [var.ipv4_address]
+  records = [var.records.a_record]
 }
 
 resource "aws_route53_record" "apex_aaaa" {
@@ -31,5 +31,16 @@ resource "aws_route53_record" "apex_aaaa" {
   type    = "AAAA"
   ttl     = 300
 
-  records = [var.ipv6_address]
+  records = [var.records.aaaa_record]
+}
+
+resource "aws_route53_record" "acme_challenge" {
+  for_each = var.records.acme_cnames
+
+  zone_id = aws_route53_zone.zone.zone_id
+  name    = each.value.name
+  type    = "CNAME"
+  ttl     = 300
+
+  records = [each.value.data]
 }

@@ -33,22 +33,24 @@ variable "peer_apex_name_servers" {
   }
 }
 
-variable "ipv4_address" {
-  description = "IPv4 address advertised at the zone apex."
-  type        = string
+variable "records" {
+  description = "DNS records advertised in this zone (apex A/AAAA plus ACME DNS-01 challenge CNAMEs)."
+  type = object({
+    a_record    = string
+    aaaa_record = string
+    acme_cnames = map(object({
+      name = string
+      data = string
+    }))
+  })
 
   validation {
-    condition     = can(cidrhost("${var.ipv4_address}/32", 0))
-    error_message = "IPv4 address must be a valid dotted-quad."
+    condition     = can(cidrhost("${var.records.a_record}/32", 0))
+    error_message = "records.a_record must be a valid IPv4 dotted-quad."
   }
-}
-
-variable "ipv6_address" {
-  description = "IPv6 address advertised at the zone apex."
-  type        = string
 
   validation {
-    condition     = can(cidrhost("${var.ipv6_address}/128", 0))
-    error_message = "IPv6 address must be a valid IPv6 literal."
+    condition     = can(cidrhost("${var.records.aaaa_record}/128", 0))
+    error_message = "records.aaaa_record must be a valid IPv6 literal."
   }
 }

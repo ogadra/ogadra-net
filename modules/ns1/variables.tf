@@ -68,23 +68,25 @@ variable "stg_peer_apex_name_servers" {
   }
 }
 
-variable "stg_ipv4_address" {
-  description = "IPv4 address advertised for the staging subdomain."
-  type        = string
+variable "stg_records" {
+  description = "DNS records advertised for the staging subdomain (apex A/AAAA plus ACME DNS-01 challenge CNAMEs)."
+  type = object({
+    a_record    = string
+    aaaa_record = string
+    acme_cnames = map(object({
+      name = string
+      data = string
+    }))
+  })
 
   validation {
-    condition     = can(cidrhost("${var.stg_ipv4_address}/32", 0))
-    error_message = "IPv4 address must be a valid dotted-quad."
+    condition     = can(cidrhost("${var.stg_records.a_record}/32", 0))
+    error_message = "stg_records.a_record must be a valid IPv4 dotted-quad."
   }
-}
-
-variable "stg_ipv6_address" {
-  description = "IPv6 address advertised for the staging subdomain."
-  type        = string
 
   validation {
-    condition     = can(cidrhost("${var.stg_ipv6_address}/128", 0))
-    error_message = "IPv6 address must be a valid IPv6 literal."
+    condition     = can(cidrhost("${var.stg_records.aaaa_record}/128", 0))
+    error_message = "stg_records.aaaa_record must be a valid IPv6 literal."
   }
 }
 
