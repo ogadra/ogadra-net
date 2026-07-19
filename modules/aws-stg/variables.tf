@@ -32,3 +32,23 @@ variable "peer_apex_name_servers" {
     error_message = "Each peer apex name server must be a valid FQDN (e.g., ns-1.example.com)."
   }
 }
+
+variable "ipv4_address" {
+  description = "IPv4 address advertised at the zone apex."
+  type        = string
+
+  validation {
+    condition     = can(cidrhost("${var.ipv4_address}/32", 0))
+    error_message = "IPv4 address must be a valid dotted-quad."
+  }
+}
+
+variable "ipv6_address" {
+  description = "IPv6 address advertised at the zone apex."
+  type        = string
+
+  validation {
+    condition     = can(cidrhost("${var.ipv6_address}/128", 0))
+    error_message = "IPv6 address must be a valid IPv6 literal."
+  }
+}

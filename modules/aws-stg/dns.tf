@@ -14,3 +14,22 @@ resource "aws_route53_record" "apex_ns" {
     }
   }
 }
+
+resource "aws_route53_record" "apex_a" {
+  #checkov:skip=CKV2_AWS_23:Points to an external IP, not an AWS resource
+  zone_id = aws_route53_zone.zone.zone_id
+  name    = var.domain_name
+  type    = "A"
+  ttl     = 300
+
+  records = [var.ipv4_address]
+}
+
+resource "aws_route53_record" "apex_aaaa" {
+  zone_id = aws_route53_zone.zone.zone_id
+  name    = var.domain_name
+  type    = "AAAA"
+  ttl     = 300
+
+  records = [var.ipv6_address]
+}

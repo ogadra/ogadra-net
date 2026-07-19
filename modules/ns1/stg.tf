@@ -40,3 +40,25 @@ resource "ns1_record" "stg_apex_ns" {
     }
   }
 }
+
+resource "ns1_record" "stg_a" {
+  zone   = ns1_zone.stg.zone
+  domain = var.stg_domain_name
+  type   = "A"
+  ttl    = 300
+
+  answers {
+    answer = var.stg_ipv4_address
+  }
+}
+
+resource "ns1_record" "stg_aaaa" {
+  zone   = ns1_zone.stg.zone
+  domain = var.stg_domain_name
+  type   = "AAAA"
+  ttl    = 300
+
+  answers {
+    answer = var.stg_ipv6_address
+  }
+}
