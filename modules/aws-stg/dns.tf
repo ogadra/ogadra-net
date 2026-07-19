@@ -20,7 +20,7 @@ resource "aws_route53_record" "apex_a" {
   zone_id = aws_route53_zone.zone.zone_id
   name    = var.domain_name
   type    = "A"
-  ttl     = 300
+  ttl     = 10
 
   records = [var.records.a_record]
 }
@@ -29,7 +29,7 @@ resource "aws_route53_record" "apex_aaaa" {
   zone_id = aws_route53_zone.zone.zone_id
   name    = var.domain_name
   type    = "AAAA"
-  ttl     = 300
+  ttl     = 10
 
   records = [var.records.aaaa_record]
 }
@@ -40,7 +40,7 @@ resource "aws_route53_record" "acme_challenge" {
   zone_id = aws_route53_zone.zone.zone_id
   name    = each.value.name
   type    = "CNAME"
-  ttl     = 300
+  ttl     = 60
 
   records = [each.value.data]
 }

@@ -23,7 +23,7 @@ resource "ns1_record" "stg_a" {
   zone   = ns1_zone.stg.zone
   domain = var.stg_domain_name
   type   = "A"
-  ttl    = 300
+  ttl    = 10
 
   answers {
     answer = var.stg_records.a_record
@@ -34,7 +34,7 @@ resource "ns1_record" "stg_aaaa" {
   zone   = ns1_zone.stg.zone
   domain = var.stg_domain_name
   type   = "AAAA"
-  ttl    = 300
+  ttl    = 10
 
   answers {
     answer = var.stg_records.aaaa_record
@@ -47,7 +47,7 @@ resource "ns1_record" "stg_acme_challenge" {
   zone   = ns1_zone.stg.zone
   domain = each.value.name
   type   = "CNAME"
-  ttl    = 300
+  ttl    = 60
 
   answers {
     answer = each.value.data
