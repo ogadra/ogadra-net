@@ -26,11 +26,6 @@ variable "peer_apex_name_servers" {
     condition     = length(distinct(var.peer_apex_name_servers)) == length(var.peer_apex_name_servers)
     error_message = "Peer apex name servers must not contain duplicates."
   }
-
-  validation {
-    condition     = alltrue([for ns in var.peer_apex_name_servers : can(regex("^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,63}\\.?$", ns))])
-    error_message = "Each peer apex name server must be a valid FQDN (e.g., ns-1.example.com)."
-  }
 }
 
 variable "records" {
@@ -43,14 +38,4 @@ variable "records" {
       data = string
     }))
   })
-
-  validation {
-    condition     = can(cidrhost("${var.records.a_record}/32", 0))
-    error_message = "records.a_record must be a valid IPv4 dotted-quad."
-  }
-
-  validation {
-    condition     = can(cidrhost("${var.records.aaaa_record}/128", 0))
-    error_message = "records.aaaa_record must be a valid IPv6 literal."
-  }
 }

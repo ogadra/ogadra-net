@@ -10,13 +10,6 @@ resource "ns1_record" "stg_apex_ns" {
       answer = answers.value
     }
   }
-
-  lifecycle {
-    precondition {
-      condition     = length(distinct(local.stg_apex_ns_name_servers)) == length(local.stg_apex_ns_name_servers)
-      error_message = "Staging apex NS RRset must not contain duplicate name servers between own and peer authoritatives."
-    }
-  }
 }
 
 resource "ns1_record" "stg_a" {

@@ -18,4 +18,13 @@ variable "stg_records" {
     condition     = can(cidrhost("${var.stg_records.aaaa_record}/128", 0))
     error_message = "stg_records.aaaa_record must be a valid IPv6 literal."
   }
+
+  validation {
+    condition = alltrue([
+      for cname in values(var.stg_records.acme_cnames) :
+      can(regex("^([a-zA-Z0-9_]([a-zA-Z0-9_-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,63}\\.?$", cname.name))
+      && can(regex("^([a-zA-Z0-9_]([a-zA-Z0-9_-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,63}\\.?$", cname.data))
+    ])
+    error_message = "Each stg_records.acme_cnames entry must have a valid FQDN for name and data."
+  }
 }
