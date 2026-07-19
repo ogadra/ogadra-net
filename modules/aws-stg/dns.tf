@@ -22,7 +22,7 @@ resource "aws_route53_record" "apex_a" {
   type    = "A"
   ttl     = 10
 
-  records = [var.records.a_record]
+  records = [var.stg_records.a_record]
 }
 
 resource "aws_route53_record" "apex_aaaa" {
@@ -31,11 +31,11 @@ resource "aws_route53_record" "apex_aaaa" {
   type    = "AAAA"
   ttl     = 10
 
-  records = [var.records.aaaa_record]
+  records = [var.stg_records.aaaa_record]
 }
 
 resource "aws_route53_record" "acme_challenge" {
-  for_each = var.records.acme_cnames
+  for_each = var.stg_records.acme_cnames
 
   zone_id = aws_route53_zone.zone.zone_id
   name    = each.value.name

@@ -52,7 +52,7 @@ resource "ns1_record" "ns" {
 
   lifecycle {
     precondition {
-      condition     = !contains(["apex", "stg"], each.key) || length(distinct(each.value.name_servers)) == length(each.value.name_servers)
+      condition     = length(distinct(each.value.name_servers)) == length(each.value.name_servers)
       error_message = "NS RRset for ${each.key} must not contain duplicate name servers between own and peer authoritatives."
     }
   }

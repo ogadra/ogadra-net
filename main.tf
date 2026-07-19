@@ -4,8 +4,8 @@ module "aws_prd" {
   domain_name            = local.domain_name
   peer_apex_name_servers = module.ns1.apex_name_servers
 
-  stg_domain_name     = local.stg_domain_name
-  stg_ns_name_servers = local.stg_apex_ns_rrset
+  stg_domain_name   = local.stg_domain_name
+  stg_apex_ns_rrset = local.stg_apex_ns_rrset
 
   prd_domain_name = local.prd_domain_name
 
@@ -20,7 +20,7 @@ module "aws_stg" {
   domain_name            = local.stg_domain_name
   peer_apex_name_servers = module.ns1.stg_apex_name_servers
 
-  records = var.stg_records
+  stg_records = var.stg_records
 
   providers = {
     aws = aws.stg

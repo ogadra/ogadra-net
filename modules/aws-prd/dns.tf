@@ -33,7 +33,7 @@ resource "aws_route53_record" "demo_ns" {
   type    = "NS"
   ttl     = 10
 
-  records = var.stg_ns_name_servers
+  records = var.stg_apex_ns_rrset
 }
 
 resource "aws_route53_zone" "bunshin" {

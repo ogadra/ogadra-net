@@ -26,11 +26,6 @@ variable "peer_apex_name_servers" {
     condition     = length(distinct(var.peer_apex_name_servers)) == length(var.peer_apex_name_servers)
     error_message = "Peer apex name servers must not contain duplicates."
   }
-
-  validation {
-    condition     = alltrue([for ns in var.peer_apex_name_servers : can(regex("^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,63}\\.?$", ns))])
-    error_message = "Each peer apex name server must be a valid FQDN (e.g., ns-1.example.com)."
-  }
 }
 
 variable "stg_domain_name" {
@@ -48,23 +43,18 @@ variable "stg_domain_name" {
   }
 }
 
-variable "stg_ns_name_servers" {
+variable "stg_apex_ns_rrset" {
   description = "Combined staging subdomain apex NS RRset (own aws-stg + peer ns1) written into the parent NS delegation."
   type        = list(string)
 
   validation {
-    condition     = length(var.stg_ns_name_servers) >= 2 && length(var.stg_ns_name_servers) <= 6
-    error_message = "Staging NS name servers must contain between 2 and 6 entries."
+    condition     = length(var.stg_apex_ns_rrset) >= 2 && length(var.stg_apex_ns_rrset) <= 6
+    error_message = "Staging apex NS RRset must contain between 2 and 6 entries."
   }
 
   validation {
-    condition     = length(distinct(var.stg_ns_name_servers)) == length(var.stg_ns_name_servers)
-    error_message = "Staging NS name servers must not contain duplicates between own and peer authoritatives."
-  }
-
-  validation {
-    condition     = alltrue([for ns in var.stg_ns_name_servers : can(regex("^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,63}\\.?$", ns))])
-    error_message = "Each staging NS entry must be a valid FQDN (e.g., ns-1.example.com)."
+    condition     = length(distinct(var.stg_apex_ns_rrset)) == length(var.stg_apex_ns_rrset)
+    error_message = "Staging apex NS RRset must not contain duplicates between own and peer authoritatives."
   }
 }
 

@@ -28,7 +28,7 @@ variable "peer_apex_name_servers" {
   }
 }
 
-variable "records" {
+variable "stg_records" {
   description = "DNS records advertised in this zone (apex A/AAAA plus ACME DNS-01 challenge CNAMEs)."
   type = object({
     a_record    = string
