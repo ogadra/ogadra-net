@@ -49,12 +49,17 @@ variable "stg_domain_name" {
 }
 
 variable "stg_ns_name_servers" {
-  description = "Name servers for staging subdomain NS delegation (minimum 2 required by DNS)."
+  description = "Combined staging subdomain apex NS RRset (own aws-stg + peer ns1) written into the parent NS delegation."
   type        = list(string)
 
   validation {
-    condition     = length(var.stg_ns_name_servers) >= 2
-    error_message = "Staging NS name servers must contain at least 2 entries."
+    condition     = length(var.stg_ns_name_servers) >= 2 && length(var.stg_ns_name_servers) <= 6
+    error_message = "Staging NS name servers must contain between 2 and 6 entries."
+  }
+
+  validation {
+    condition     = length(distinct(var.stg_ns_name_servers)) == length(var.stg_ns_name_servers)
+    error_message = "Staging NS name servers must not contain duplicates between own and peer authoritatives."
   }
 
   validation {

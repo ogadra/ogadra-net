@@ -34,6 +34,13 @@ resource "aws_route53_record" "demo_ns" {
   ttl     = 10
 
   records = var.stg_ns_name_servers
+
+  lifecycle {
+    precondition {
+      condition     = length(distinct(var.stg_ns_name_servers)) == length(var.stg_ns_name_servers)
+      error_message = "Staging NS delegation must not contain duplicate name servers between own and peer authoritatives."
+    }
+  }
 }
 
 resource "aws_route53_zone" "bunshin" {
