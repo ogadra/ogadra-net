@@ -5,7 +5,7 @@ module "aws_prd" {
   peer_apex_name_servers = module.ns1.apex_name_servers
 
   stg_domain_name     = local.stg_domain_name
-  stg_ns_name_servers = concat(module.aws_stg.apex_name_servers, module.ns1.stg_apex_name_servers)
+  stg_ns_name_servers = local.stg_apex_ns_rrset
 
   prd_domain_name = local.prd_domain_name
 
