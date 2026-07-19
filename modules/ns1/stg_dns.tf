@@ -45,7 +45,7 @@ resource "ns1_record" "stg_acme_challenge" {
   for_each = var.stg_records.acme_cnames
 
   zone   = ns1_zone.stg.zone
-  domain = each.value.name
+  domain = trimsuffix(each.value.name, ".")
   type   = "CNAME"
   ttl    = 60
 
