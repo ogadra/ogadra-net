@@ -7,6 +7,11 @@ locals {
 
   apex_ns_name_servers = concat(local.own_apex_name_servers, var.peer_apex_name_servers)
 
+  stg_regions = toset([
+    "asia-northeast1",
+    "asia-northeast2",
+  ])
+
   ns_records = {
     apex = {
       domain       = var.domain_name

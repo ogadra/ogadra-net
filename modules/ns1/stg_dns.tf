@@ -53,3 +53,29 @@ resource "ns1_record" "stg_acme_challenge" {
     answer = each.value.data
   }
 }
+
+resource "ns1_record" "stg_region_a" {
+  for_each = local.stg_regions
+
+  zone   = ns1_zone.stg.zone
+  domain = "*.${each.value}.${var.stg_domain_name}"
+  type   = "A"
+  ttl    = 10
+
+  answers {
+    answer = var.stg_records.a_record
+  }
+}
+
+resource "ns1_record" "stg_region_aaaa" {
+  for_each = local.stg_regions
+
+  zone   = ns1_zone.stg.zone
+  domain = "*.${each.value}.${var.stg_domain_name}"
+  type   = "AAAA"
+  ttl    = 10
+
+  answers {
+    answer = var.stg_records.aaaa_record
+  }
+}

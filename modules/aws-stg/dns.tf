@@ -44,3 +44,26 @@ resource "aws_route53_record" "acme_challenge" {
 
   records = [each.value.data]
 }
+
+resource "aws_route53_record" "stg_region_a" {
+  #checkov:skip=CKV2_AWS_23:Points to an external IP, not an AWS resource
+  for_each = local.stg_regions
+
+  zone_id = aws_route53_zone.zone.zone_id
+  name    = "*.${each.value}.${var.domain_name}"
+  type    = "A"
+  ttl     = 10
+
+  records = [var.stg_records.a_record]
+}
+
+resource "aws_route53_record" "stg_region_aaaa" {
+  for_each = local.stg_regions
+
+  zone_id = aws_route53_zone.zone.zone_id
+  name    = "*.${each.value}.${var.domain_name}"
+  type    = "AAAA"
+  ttl     = 10
+
+  records = [var.stg_records.aaaa_record]
+}

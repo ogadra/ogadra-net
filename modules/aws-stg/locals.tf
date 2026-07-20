@@ -9,4 +9,9 @@ locals {
   ]), 0, 3)
 
   apex_ns_name_servers = concat(local.own_apex_name_servers, var.peer_apex_name_servers)
+
+  stg_regions = toset([
+    "asia-northeast1",
+    "asia-northeast2",
+  ])
 }
