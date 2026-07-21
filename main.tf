@@ -21,7 +21,9 @@ module "aws_stg" {
   domain_name            = local.stg_domain_name
   peer_apex_name_servers = module.ns1.stg_apex_name_servers
 
-  stg_records = var.stg_records
+  stg_google_cloud_records = var.stg_google_cloud_records
+  stg_aws_records          = var.stg_aws_records
+  stg_weights              = var.stg_weights
 
   providers = {
     aws = aws.stg
@@ -36,7 +38,9 @@ module "ns1" {
 
   stg_domain_name            = local.stg_domain_name
   stg_peer_apex_name_servers = module.aws_stg.apex_name_servers
-  stg_records                = var.stg_records
+  stg_google_cloud_records   = var.stg_google_cloud_records
+  stg_aws_records            = var.stg_aws_records
+  stg_weights                = var.stg_weights
 
   prd_domain_name     = local.prd_domain_name
   prd_ns_name_servers = module.aws_prd.name_servers

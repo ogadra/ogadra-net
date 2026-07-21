@@ -58,7 +58,7 @@ variable "stg_peer_apex_name_servers" {
   }
 }
 
-variable "stg_records" {
+variable "stg_google_cloud_records" {
   description = "DNS records advertised for the staging subdomain (apex A/AAAA plus ACME DNS-01 challenge CNAMEs)."
   type = object({
     a_record    = string
@@ -67,6 +67,31 @@ variable "stg_records" {
       name = string
       data = string
     }))
+  })
+}
+
+variable "stg_aws_records" {
+  description = "DNS records advertised for the staging subdomain from the AWS deployment (Route53 alias targets and ACM DNS validation CNAMEs)."
+  type = object({
+    user_dns = object({
+      aliases = map(object({
+        name    = string
+        target  = string
+        zone_id = string
+      }))
+    })
+    user_dns_acm_validation = map(object({
+      name = string
+      data = string
+    }))
+  })
+}
+
+variable "stg_weights" {
+  description = "Relative DNS answer weights for the staging apex weighted shuffle."
+  type = object({
+    aws          = number
+    google_cloud = number
   })
 }
 
