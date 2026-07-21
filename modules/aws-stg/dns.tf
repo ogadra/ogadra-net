@@ -26,6 +26,7 @@ resource "aws_route53_record" "apex_a_google_cloud" {
   weighted_routing_policy {
     weight = var.stg_weights.google_cloud
   }
+  health_check_id = local.stg_aws_apex_alias != null ? aws_route53_health_check.apex_google_cloud[0].id : null
 
   records = [var.stg_google_cloud_records.a_record]
 }
@@ -40,6 +41,7 @@ resource "aws_route53_record" "apex_aaaa_google_cloud" {
   weighted_routing_policy {
     weight = var.stg_weights.google_cloud
   }
+  health_check_id = local.stg_aws_apex_alias != null ? aws_route53_health_check.apex_google_cloud[0].id : null
 
   records = [var.stg_google_cloud_records.aaaa_record]
 }
@@ -65,6 +67,7 @@ resource "aws_route53_record" "apex_a_aws" {
   weighted_routing_policy {
     weight = var.stg_weights.aws
   }
+  health_check_id = aws_route53_health_check.apex_aws[0].id
 
   alias {
     name                   = local.stg_aws_apex_alias.target
@@ -84,6 +87,7 @@ resource "aws_route53_record" "apex_aaaa_aws" {
   weighted_routing_policy {
     weight = var.stg_weights.aws
   }
+  health_check_id = aws_route53_health_check.apex_aws[0].id
 
   alias {
     name                   = local.stg_aws_apex_alias.target

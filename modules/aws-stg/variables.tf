@@ -64,3 +64,13 @@ variable "stg_weights" {
     google_cloud = number
   })
 }
+
+variable "stg_health_check_path" {
+  description = "HTTPS resource path probed by health checks gating the apex weighted answers."
+  type        = string
+
+  validation {
+    condition     = startswith(var.stg_health_check_path, "/")
+    error_message = "Health check path must start with a slash."
+  }
+}

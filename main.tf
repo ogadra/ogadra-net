@@ -24,6 +24,7 @@ module "aws_stg" {
   stg_google_cloud_records = var.stg_google_cloud_records
   stg_aws_records          = var.stg_aws_records
   stg_weights              = var.stg_weights
+  stg_health_check_path    = local.stg_health_check_path
 
   providers = {
     aws = aws.stg
