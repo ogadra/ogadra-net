@@ -75,9 +75,9 @@ variable "stg_weights" {
   validation {
     condition = alltrue([
       for weight in [var.stg_weights.aws, var.stg_weights.google_cloud] :
-      floor(weight) == weight && weight >= 0 && weight <= 100
-    ]) && var.stg_weights.aws + var.stg_weights.google_cloud > 0
-    error_message = "stg_weights must be integers between 0 and 100, and their sum must be greater than 0."
+      floor(weight) == weight && weight >= 1 && weight <= 100
+    ])
+    error_message = "stg_weights must be integers between 1 and 100 (weight 0 would make NS1's weighted shuffle return an empty answer set once the other side is down)."
   }
 }
 
