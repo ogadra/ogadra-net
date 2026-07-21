@@ -8,6 +8,7 @@ module "aws_prd" {
   stg_apex_ns_rrset = local.stg_apex_ns_rrset
 
   prd_domain_name = local.prd_domain_name
+  prd_records     = var.prd_records
 
   providers = {
     aws = aws.prd

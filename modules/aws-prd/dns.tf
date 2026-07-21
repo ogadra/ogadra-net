@@ -52,3 +52,56 @@ resource "aws_route53_record" "bunshin_ns" {
 
   records = aws_route53_zone.bunshin.name_servers
 }
+
+resource "aws_route53_record" "bunshin_apex_a" {
+  #checkov:skip=CKV2_AWS_23:Points to an external IP, not an AWS resource
+  zone_id = aws_route53_zone.bunshin.zone_id
+  name    = var.prd_domain_name
+  type    = "A"
+  ttl     = 10
+
+  records = [var.prd_records.a_record]
+}
+
+resource "aws_route53_record" "bunshin_apex_aaaa" {
+  zone_id = aws_route53_zone.bunshin.zone_id
+  name    = var.prd_domain_name
+  type    = "AAAA"
+  ttl     = 10
+
+  records = [var.prd_records.aaaa_record]
+}
+
+resource "aws_route53_record" "bunshin_acme_challenge" {
+  for_each = var.prd_records.acme_cnames
+
+  zone_id = aws_route53_zone.bunshin.zone_id
+  name    = each.value.name
+  type    = "CNAME"
+  ttl     = 60
+
+  records = [each.value.data]
+}
+
+resource "aws_route53_record" "bunshin_region_a" {
+  #checkov:skip=CKV2_AWS_23:Points to an external IP, not an AWS resource
+  for_each = local.prd_regions
+
+  zone_id = aws_route53_zone.bunshin.zone_id
+  name    = "*.${each.value}.${var.prd_domain_name}"
+  type    = "A"
+  ttl     = 10
+
+  records = [var.prd_records.a_record]
+}
+
+resource "aws_route53_record" "bunshin_region_aaaa" {
+  for_each = local.prd_regions
+
+  zone_id = aws_route53_zone.bunshin.zone_id
+  name    = "*.${each.value}.${var.prd_domain_name}"
+  type    = "AAAA"
+  ttl     = 10
+
+  records = [var.prd_records.aaaa_record]
+}

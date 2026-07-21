@@ -72,3 +72,15 @@ variable "prd_domain_name" {
     error_message = "Production domain name must be a valid FQDN (e.g., bunshin.example.com)."
   }
 }
+
+variable "prd_records" {
+  description = "DNS records advertised in the production zone (apex A/AAAA plus ACME DNS-01 challenge CNAMEs)."
+  type = object({
+    a_record    = string
+    aaaa_record = string
+    acme_cnames = map(object({
+      name = string
+      data = string
+    }))
+  })
+}

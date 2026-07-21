@@ -1,10 +1,13 @@
 resource "aws_acm_certificate" "bunshin_global" {
   provider = aws.global
 
-  domain_name               = var.prd_domain_name
-  subject_alternative_names = ["*.${var.prd_domain_name}"]
-  validation_method         = "DNS"
-  tags                      = local.tags
+  domain_name = var.prd_domain_name
+  subject_alternative_names = concat(
+    ["*.${var.prd_domain_name}"],
+    [for region in local.prd_regions : "*.${region}.${var.prd_domain_name}"],
+  )
+  validation_method = "DNS"
+  tags              = local.tags
 
   lifecycle {
     create_before_destroy = true
