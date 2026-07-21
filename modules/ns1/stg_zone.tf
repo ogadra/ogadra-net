@@ -23,6 +23,7 @@ locals {
 resource "ns1_zone" "stg" {
   zone                   = var.stg_domain_name
   autogenerate_ns_record = false
+  nx_ttl                 = 30
 
   lifecycle {
     postcondition {
