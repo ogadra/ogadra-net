@@ -42,6 +42,7 @@ module "ns1" {
   stg_google_cloud_records   = var.stg_google_cloud_records
   stg_aws_records            = var.stg_aws_records
   stg_weights                = var.stg_weights
+  stg_health_check_path      = local.stg_health_check_path
 
   prd_domain_name     = local.prd_domain_name
   prd_ns_name_servers = module.aws_prd.name_servers

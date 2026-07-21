@@ -95,6 +95,16 @@ variable "stg_weights" {
   })
 }
 
+variable "stg_health_check_path" {
+  description = "HTTPS resource path probed by monitoring jobs gating the apex weighted answers."
+  type        = string
+
+  validation {
+    condition     = startswith(var.stg_health_check_path, "/")
+    error_message = "Health check path must start with a slash."
+  }
+}
+
 variable "prd_domain_name" {
   description = "Production subdomain name for NS delegation."
   type        = string

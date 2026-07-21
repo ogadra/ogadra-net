@@ -67,6 +67,7 @@ resource "ns1_record" "stg_apex_alias" {
     answer = trimsuffix(local.stg_aws_apex_alias.target, ".")
     meta = {
       weight = var.stg_weights.aws
+      up     = jsonencode({ feed = ns1_datafeed.stg_apex_aws[0].id })
     }
   }
 
@@ -74,7 +75,12 @@ resource "ns1_record" "stg_apex_alias" {
     answer = "google-cloud.${var.stg_domain_name}"
     meta = {
       weight = var.stg_weights.google_cloud
+      up     = jsonencode({ feed = ns1_datafeed.stg_apex_google_cloud[0].id })
     }
+  }
+
+  filters {
+    filter = "up"
   }
 
   filters {
