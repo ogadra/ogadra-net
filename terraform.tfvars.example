@@ -8,3 +8,14 @@ stg_records = {
     }
   }
 }
+
+prd_records = {
+  a_record    = "192.0.2.1"
+  aaaa_record = "2001:db8::1"
+  acme_cnames = {
+    apex = {
+      name = "_acme-challenge.bunshin.example.com."
+      data = "example.4.authorize.certificatemanager.goog."
+    }
+  }
+}
