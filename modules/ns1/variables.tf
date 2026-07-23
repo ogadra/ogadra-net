@@ -85,6 +85,14 @@ variable "stg_aws_records" {
       data = string
     }))
   })
+
+  validation {
+    condition = length([
+      for alias in values(var.stg_aws_records.user_dns.aliases) :
+      alias if trimsuffix(alias.name, ".") == var.stg_domain_name
+    ]) == 1
+    error_message = "stg_aws_records.user_dns.aliases must contain exactly one entry whose name matches stg_domain_name (${var.stg_domain_name}); this alias is the AWS apex answer competing with the Google Cloud GLB via NS1 weighted shuffle."
+  }
 }
 
 variable "stg_weights" {

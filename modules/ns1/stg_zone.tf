@@ -9,6 +9,7 @@ locals {
 
   # The apex alias competes with the Google Cloud GLB via weighted answers;
   # every other alias is an AWS-only name and is registered as a CNAME.
+  # Presence of the apex alias is enforced by variable validation.
   stg_aws_apex_alias = one([
     for alias in values(var.stg_aws_records.user_dns.aliases) :
     alias if trimsuffix(alias.name, ".") == var.stg_domain_name

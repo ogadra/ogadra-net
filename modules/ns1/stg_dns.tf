@@ -19,45 +19,7 @@ resource "ns1_record" "stg_apex_ns" {
   }
 }
 
-resource "ns1_record" "stg_a" {
-  count = local.stg_aws_apex_alias == null ? 1 : 0
-
-  zone   = ns1_zone.stg.zone
-  domain = var.stg_domain_name
-  type   = "A"
-  ttl    = 10
-
-  answers {
-    answer = var.stg_google_cloud_records.a_record
-  }
-}
-
-resource "ns1_record" "stg_aaaa" {
-  count = local.stg_aws_apex_alias == null ? 1 : 0
-
-  zone   = ns1_zone.stg.zone
-  domain = var.stg_domain_name
-  type   = "AAAA"
-  ttl    = 10
-
-  answers {
-    answer = var.stg_google_cloud_records.aaaa_record
-  }
-}
-
-moved {
-  from = ns1_record.stg_a
-  to   = ns1_record.stg_a[0]
-}
-
-moved {
-  from = ns1_record.stg_aaaa
-  to   = ns1_record.stg_aaaa[0]
-}
-
 resource "ns1_record" "stg_apex_alias" {
-  count = local.stg_aws_apex_alias != null ? 1 : 0
-
   zone   = ns1_zone.stg.zone
   domain = var.stg_domain_name
   type   = "ALIAS"
@@ -67,7 +29,7 @@ resource "ns1_record" "stg_apex_alias" {
     answer = trimsuffix(local.stg_aws_apex_alias.target, ".")
     meta = {
       weight = var.stg_weights.aws
-      up     = jsonencode({ feed = ns1_datafeed.stg_apex_aws[0].id })
+      up     = jsonencode({ feed = ns1_datafeed.stg_apex_aws.id })
     }
   }
 
@@ -75,7 +37,7 @@ resource "ns1_record" "stg_apex_alias" {
     answer = "google-cloud.${var.stg_domain_name}"
     meta = {
       weight = var.stg_weights.google_cloud
-      up     = jsonencode({ feed = ns1_datafeed.stg_apex_google_cloud[0].id })
+      up     = jsonencode({ feed = ns1_datafeed.stg_apex_google_cloud.id })
     }
   }
 

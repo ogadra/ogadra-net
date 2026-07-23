@@ -1,9 +1,6 @@
-# Monitoring jobs feed the apex ALIAS answers' up metadata; they only exist
-# while the apex is served active/active (i.e. the AWS apex alias is present).
+# Monitoring jobs feed the apex ALIAS answers' up metadata.
 # virtual_host keeps the probed SNI/Host identical to real apex traffic.
 resource "ns1_monitoringjob" "stg_apex_aws" {
-  count = local.stg_aws_apex_alias != null ? 1 : 0
-
   name          = "${var.stg_domain_name}-apex-aws"
   job_type      = "http"
   active        = true
@@ -11,7 +8,7 @@ resource "ns1_monitoringjob" "stg_apex_aws" {
   frequency     = 60
   rapid_recheck = true
   policy        = "quorum"
-  notify_list   = ns1_notifylist.monitoring[0].id
+  notify_list   = ns1_notifylist.monitoring.id
 
   config = {
     method       = "GET"
@@ -27,8 +24,6 @@ resource "ns1_monitoringjob" "stg_apex_aws" {
 }
 
 resource "ns1_monitoringjob" "stg_apex_google_cloud" {
-  count = local.stg_aws_apex_alias != null ? 1 : 0
-
   name          = "${var.stg_domain_name}-apex-google-cloud"
   job_type      = "http"
   active        = true
@@ -36,7 +31,7 @@ resource "ns1_monitoringjob" "stg_apex_google_cloud" {
   frequency     = 60
   rapid_recheck = true
   policy        = "quorum"
-  notify_list   = ns1_notifylist.monitoring[0].id
+  notify_list   = ns1_notifylist.monitoring.id
 
   config = {
     method       = "GET"
@@ -52,8 +47,6 @@ resource "ns1_monitoringjob" "stg_apex_google_cloud" {
 }
 
 resource "ns1_datasource" "monitoring" {
-  count = local.stg_aws_apex_alias != null ? 1 : 0
-
   name       = "monitoring"
   sourcetype = "nsone_monitoring"
 }
@@ -61,36 +54,30 @@ resource "ns1_datasource" "monitoring" {
 # Jobs only push status changes to the data source through a notify list with
 # a datafeed notifier; without it the connected feeds never update.
 resource "ns1_notifylist" "monitoring" {
-  count = local.stg_aws_apex_alias != null ? 1 : 0
-
   name = "monitoring-datafeed"
 
   notifications {
     type = "datafeed"
     config = {
-      sourceid = ns1_datasource.monitoring[0].id
+      sourceid = ns1_datasource.monitoring.id
     }
   }
 }
 
 resource "ns1_datafeed" "stg_apex_aws" {
-  count = local.stg_aws_apex_alias != null ? 1 : 0
-
   name      = "${var.stg_domain_name}-apex-aws"
-  source_id = ns1_datasource.monitoring[0].id
+  source_id = ns1_datasource.monitoring.id
 
   config = {
-    jobid = ns1_monitoringjob.stg_apex_aws[0].id
+    jobid = ns1_monitoringjob.stg_apex_aws.id
   }
 }
 
 resource "ns1_datafeed" "stg_apex_google_cloud" {
-  count = local.stg_aws_apex_alias != null ? 1 : 0
-
   name      = "${var.stg_domain_name}-apex-google-cloud"
-  source_id = ns1_datasource.monitoring[0].id
+  source_id = ns1_datasource.monitoring.id
 
   config = {
-    jobid = ns1_monitoringjob.stg_apex_google_cloud[0].id
+    jobid = ns1_monitoringjob.stg_apex_google_cloud.id
   }
 }
