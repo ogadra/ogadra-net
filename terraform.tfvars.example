@@ -1,4 +1,4 @@
-stg_records = {
+stg_google_cloud_records = {
   a_record    = "192.0.2.1"
   aaaa_record = "2001:db8::1"
   acme_cnames = {
@@ -7,6 +7,38 @@ stg_records = {
       data = "example.4.authorize.certificatemanager.goog."
     }
   }
+}
+
+stg_aws_records = {
+  user_dns = {
+    aliases = {
+      main = {
+        name    = "demo.example.com"
+        target  = "dexample.cloudfront.net"
+        zone_id = "Z2FDTNDATAQYW2"
+      }
+      port_forward_apne1 = {
+        name    = "*.ap-northeast-1.demo.example.com"
+        target  = "dexample1.cloudfront.net"
+        zone_id = "Z2FDTNDATAQYW2"
+      }
+    }
+  }
+  user_dns_acm_validation = {
+    port_forward_apne1 = {
+      name = "_example1.ap-northeast-1.demo.example.com."
+      data = "_example1.abcdefghij.acm-validations.aws."
+    }
+    port_forward_apne3 = {
+      name = "_example3.ap-northeast-3.demo.example.com."
+      data = "_example3.abcdefghij.acm-validations.aws."
+    }
+  }
+}
+
+stg_weights = {
+  aws          = 0
+  google_cloud = 100
 }
 
 prd_records = {
