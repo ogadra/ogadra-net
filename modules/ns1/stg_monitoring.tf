@@ -4,7 +4,7 @@ resource "ns1_monitoringjob" "stg_apex_aws" {
   name          = "${var.stg_domain_name}-apex-aws"
   job_type      = "http"
   active        = true
-  regions       = ["lga", "sjc", "sin"]
+  regions       = ["sin", "syd", "ams"]
   frequency     = 60
   rapid_recheck = true
   policy        = "quorum"
@@ -27,7 +27,7 @@ resource "ns1_monitoringjob" "stg_apex_google_cloud" {
   name          = "${var.stg_domain_name}-apex-google-cloud"
   job_type      = "http"
   active        = true
-  regions       = ["lga", "sjc", "sin"]
+  regions       = ["sin", "syd", "ams"]
   frequency     = 60
   rapid_recheck = true
   policy        = "quorum"
