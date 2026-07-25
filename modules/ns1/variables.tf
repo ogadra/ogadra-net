@@ -128,17 +128,72 @@ variable "prd_domain_name" {
   }
 }
 
-variable "prd_ns_name_servers" {
-  description = "Name servers for production subdomain NS delegation."
+variable "prd_peer_apex_name_servers" {
+  description = "Peer authoritative name servers to mirror into the production subdomain apex NS RRset."
   type        = list(string)
 
   validation {
-    condition     = length(var.prd_ns_name_servers) >= 2 && length(var.prd_ns_name_servers) <= 6
-    error_message = "Production NS name servers must contain between 2 and 6 entries."
+    condition     = length(var.prd_peer_apex_name_servers) >= 1 && length(var.prd_peer_apex_name_servers) <= 3
+    error_message = "Production peer apex name servers must contain between 1 and 3 entries."
   }
 
   validation {
-    condition     = alltrue([for ns in var.prd_ns_name_servers : can(regex("^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,63}\\.?$", ns))])
-    error_message = "Each production NS entry must be a valid FQDN (e.g., ns-1.example.com)."
+    condition     = length(distinct(var.prd_peer_apex_name_servers)) == length(var.prd_peer_apex_name_servers)
+    error_message = "Production peer apex name servers must not contain duplicates."
+  }
+}
+
+variable "prd_google_cloud_records" {
+  description = "DNS records advertised for the production subdomain (apex A/AAAA plus ACME DNS-01 challenge CNAMEs)."
+  type = object({
+    a_record    = string
+    aaaa_record = string
+    acme_cnames = map(object({
+      name = string
+      data = string
+    }))
+  })
+}
+
+variable "prd_aws_records" {
+  description = "DNS records advertised for the production subdomain from the AWS deployment (Route53 alias targets and ACM DNS validation CNAMEs)."
+  type = object({
+    user_dns = object({
+      aliases = map(object({
+        name    = string
+        target  = string
+        zone_id = string
+      }))
+    })
+    user_dns_acm_validation = map(object({
+      name = string
+      data = string
+    }))
+  })
+
+  validation {
+    condition = length([
+      for alias in values(var.prd_aws_records.user_dns.aliases) :
+      alias if trimsuffix(alias.name, ".") == var.prd_domain_name
+    ]) == 1
+    error_message = "prd_aws_records.user_dns.aliases must contain exactly one entry whose name matches prd_domain_name (${var.prd_domain_name}); this alias is the AWS apex answer competing with the Google Cloud GLB via NS1 weighted shuffle."
+  }
+}
+
+variable "prd_weights" {
+  description = "Relative DNS answer weights for the production apex weighted shuffle."
+  type = object({
+    aws          = number
+    google_cloud = number
+  })
+}
+
+variable "prd_health_check_path" {
+  description = "HTTPS resource path probed by monitoring jobs gating the production apex weighted answers."
+  type        = string
+
+  validation {
+    condition     = startswith(var.prd_health_check_path, "/")
+    error_message = "Health check path must start with a slash."
   }
 }
