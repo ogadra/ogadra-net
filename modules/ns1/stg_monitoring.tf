@@ -11,9 +11,15 @@ resource "ns1_monitoringjob" "stg_apex_aws" {
   notify_list   = ns1_notifylist.monitoring.id
 
   config = {
-    method       = "GET"
-    url          = "https://${trimsuffix(local.stg_aws_apex_alias.target, ".")}${var.stg_health_check_path}"
-    virtual_host = var.stg_domain_name
+    method          = "GET"
+    url             = "https://${trimsuffix(local.stg_aws_apex_alias.target, ".")}${var.stg_health_check_path}"
+    virtual_host    = var.stg_domain_name
+    connect_timeout = "5"
+    follow_redirect = "false"
+    idle_timeout    = "3"
+    ipv6            = "false"
+    tls_add_verify  = "false"
+    user_agent      = "NS1 HTTP Monitoring Job"
   }
 
   rules {
@@ -34,9 +40,15 @@ resource "ns1_monitoringjob" "stg_apex_google_cloud" {
   notify_list   = ns1_notifylist.monitoring.id
 
   config = {
-    method       = "GET"
-    url          = "https://${var.stg_google_cloud_records.a_record}${var.stg_health_check_path}"
-    virtual_host = var.stg_domain_name
+    method          = "GET"
+    url             = "https://${var.stg_google_cloud_records.a_record}${var.stg_health_check_path}"
+    virtual_host    = var.stg_domain_name
+    connect_timeout = "5"
+    follow_redirect = "false"
+    idle_timeout    = "3"
+    ipv6            = "false"
+    tls_add_verify  = "false"
+    user_agent      = "NS1 HTTP Monitoring Job"
   }
 
   rules {

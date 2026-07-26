@@ -23,7 +23,7 @@ locals {
     }
     prd = {
       domain       = var.prd_domain_name
-      name_servers = [for ns in var.prd_ns_name_servers : trimsuffix(ns, ".")]
+      name_servers = local.prd_apex_ns_name_servers
     }
   }
 }

@@ -73,7 +73,37 @@ variable "prd_domain_name" {
   }
 }
 
-variable "prd_records" {
+variable "prd_apex_ns_rrset" {
+  description = "Combined production subdomain apex NS RRset (own aws-prd + peer ns1) written into the parent NS delegation."
+  type        = list(string)
+
+  validation {
+    condition     = length(var.prd_apex_ns_rrset) >= 2 && length(var.prd_apex_ns_rrset) <= 6
+    error_message = "Production apex NS RRset must contain between 2 and 6 entries."
+  }
+
+  validation {
+    condition     = length(distinct(var.prd_apex_ns_rrset)) == length(var.prd_apex_ns_rrset)
+    error_message = "Production apex NS RRset must not contain duplicates between own and peer authoritatives."
+  }
+}
+
+variable "prd_peer_apex_name_servers" {
+  description = "Peer authoritative name servers to mirror into the production subdomain apex NS RRset."
+  type        = list(string)
+
+  validation {
+    condition     = length(var.prd_peer_apex_name_servers) >= 1 && length(var.prd_peer_apex_name_servers) <= 3
+    error_message = "Production peer apex name servers must contain between 1 and 3 entries."
+  }
+
+  validation {
+    condition     = length(distinct(var.prd_peer_apex_name_servers)) == length(var.prd_peer_apex_name_servers)
+    error_message = "Production peer apex name servers must not contain duplicates."
+  }
+}
+
+variable "prd_google_cloud_records" {
   description = "DNS records advertised in the production zone (apex A/AAAA plus ACME DNS-01 challenge CNAMEs)."
   type = object({
     a_record    = string
@@ -83,4 +113,39 @@ variable "prd_records" {
       data = string
     }))
   })
+}
+
+variable "prd_aws_records" {
+  description = "DNS records advertised in the production zone from the AWS deployment (Route53 alias targets and ACM DNS validation CNAMEs)."
+  type = object({
+    user_dns = object({
+      aliases = map(object({
+        name    = string
+        target  = string
+        zone_id = string
+      }))
+    })
+    user_dns_acm_validation = map(object({
+      name = string
+      data = string
+    }))
+  })
+}
+
+variable "prd_weights" {
+  description = "Relative DNS answer weights for the production apex weighted records."
+  type = object({
+    aws          = number
+    google_cloud = number
+  })
+}
+
+variable "prd_health_check_path" {
+  description = "HTTPS resource path probed by health checks gating the production apex weighted answers."
+  type        = string
+
+  validation {
+    condition     = startswith(var.prd_health_check_path, "/")
+    error_message = "Health check path must start with a slash."
+  }
 }
