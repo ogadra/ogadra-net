@@ -27,15 +27,6 @@ resource "aws_route53_record" "domain_ns" {
   }
 }
 
-resource "aws_route53_record" "demo_ns" {
-  zone_id = data.aws_route53_zone.domain.zone_id
-  name    = var.stg_domain_name
-  type    = "NS"
-  ttl     = 10
-
-  records = var.stg_apex_ns_rrset
-}
-
 resource "aws_route53_zone" "bunshin" {
   #checkov:skip=CKV2_AWS_38:DNSSEC is not required for this subdomain
   #checkov:skip=CKV2_AWS_39:DNS query logging is not required for this subdomain

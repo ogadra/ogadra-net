@@ -8,7 +8,7 @@ locals {
     for name_server in aws_route53_zone.zone.name_servers : trimsuffix(name_server, ".")
   ]), 0, 3)
 
-  apex_ns_name_servers = concat(local.own_apex_name_servers, var.peer_apex_name_servers)
+  apex_ns_name_servers = concat(local.own_apex_name_servers)
 
   stg_regions = toset([
     "asia-northeast1",
