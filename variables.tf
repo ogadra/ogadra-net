@@ -1,3 +1,13 @@
+variable "google_cloud_project" {
+  description = "Google Cloud project hosting the Cloud DNS zones and the apex health check."
+  type        = string
+
+  validation {
+    condition     = can(regex("^[a-z][a-z0-9-]{4,28}[a-z0-9]$", var.google_cloud_project))
+    error_message = "google_cloud_project must be a valid project ID: 6 to 30 characters of lowercase letters, digits and hyphens, starting with a letter and not ending with a hyphen."
+  }
+}
+
 variable "prd_google_cloud_records" {
   description = "DNS records advertised for the production subdomain apex and ACME DNS-01 challenge CNAMEs."
   type = object({
@@ -30,9 +40,13 @@ variable "prd_google_cloud_records" {
 }
 
 variable "prd_aws_records" {
-  description = "DNS records advertised for the production subdomain from the AWS deployment (Route53 alias targets and ACM DNS validation CNAMEs)."
+  description = "DNS records advertised for the production subdomain from the AWS deployment (static IPv4 addresses, Route53 alias targets and ACM DNS validation CNAMEs)."
   type = object({
     user_dns = object({
+      addresses = map(object({
+        name      = string
+        addresses = list(string)
+      }))
       aliases = map(object({
         name    = string
         target  = string
@@ -44,6 +58,16 @@ variable "prd_aws_records" {
       data = string
     }))
   })
+
+  validation {
+    condition = alltrue([
+      for address in values(var.prd_aws_records.user_dns.addresses) :
+      can(regex("^(\\*\\.)?([a-zA-Z0-9_]([a-zA-Z0-9_-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,63}\\.?$", address.name))
+      && length(address.addresses) > 0
+      && alltrue([for ip in address.addresses : can(cidrhost("${ip}/32", 0))])
+    ])
+    error_message = "Each prd_aws_records.user_dns.addresses entry must have a valid DNS name (leading wildcard allowed) and at least one IPv4 dotted-quad address."
+  }
 
   validation {
     condition = alltrue([

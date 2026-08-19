@@ -1,45 +1,4 @@
-stg_google_cloud_records = {
-  a_record    = "192.0.2.1"
-  aaaa_record = "2001:db8::1"
-  acme_cnames = {
-    apex = {
-      name = "_acme-challenge.demo.example.com."
-      data = "example.4.authorize.certificatemanager.goog."
-    }
-  }
-}
-
-stg_aws_records = {
-  user_dns = {
-    aliases = {
-      main = {
-        name    = "demo.example.com"
-        target  = "dexample.cloudfront.net"
-        zone_id = "Z2FDTNDATAQYW2"
-      }
-      port_forward_apne1 = {
-        name    = "*.ap-northeast-1.demo.example.com"
-        target  = "dexample1.cloudfront.net"
-        zone_id = "Z2FDTNDATAQYW2"
-      }
-    }
-  }
-  user_dns_acm_validation = {
-    port_forward_apne1 = {
-      name = "_example1.ap-northeast-1.demo.example.com."
-      data = "_example1.abcdefghij.acm-validations.aws."
-    }
-    port_forward_apne3 = {
-      name = "_example3.ap-northeast-3.demo.example.com."
-      data = "_example3.abcdefghij.acm-validations.aws."
-    }
-  }
-}
-
-stg_weights = {
-  aws          = 0
-  google_cloud = 100
-}
+google_cloud_project = "example-prd"
 
 prd_google_cloud_records = {
   a_record    = "192.0.2.1"
@@ -54,12 +13,13 @@ prd_google_cloud_records = {
 
 prd_aws_records = {
   user_dns = {
-    aliases = {
+    addresses = {
       main = {
-        name    = "bunshin.example.com"
-        target  = "dexample.cloudfront.net"
-        zone_id = "Z2FDTNDATAQYW2"
+        name      = "bunshin.example.com"
+        addresses = ["198.51.100.1", "198.51.100.2"]
       }
+    }
+    aliases = {
       port_forward_apne1 = {
         name    = "*.ap-northeast-1.bunshin.example.com"
         target  = "dexample1.cloudfront.net"
