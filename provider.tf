@@ -6,10 +6,6 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 6.0"
     }
-    ns1 = {
-      source  = "ns1-terraform/ns1"
-      version = "~> 2.9"
-    }
   }
 }
 
@@ -18,11 +14,3 @@ provider "aws" {
   region  = "us-east-1"
   profile = "prd"
 }
-
-provider "aws" {
-  alias   = "stg"
-  region  = "us-east-1"
-  profile = "stg"
-}
-
-provider "ns1" {}
