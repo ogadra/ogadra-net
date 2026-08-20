@@ -116,8 +116,10 @@ resource "google_dns_record_set" "bunshin_user_dns_a" {
   rrdatas = each.value.addresses
 }
 
-# Cloud DNS has no ALIAS type, so Route53 alias targets are published as CNAMEs.
-# Variable validation keeps the apex out of this map, where a CNAME is illegal.
+# Cloud DNS has no ALIAS type, so these names answer with a CNAME while Route53
+# flattens the same alias to A records. CloudFront has no static addresses to
+# publish instead, and the CNAME lands on the same distribution. Variable
+# validation keeps the apex out of this map, where a CNAME would be illegal.
 resource "google_dns_record_set" "bunshin_user_dns_alias" {
   for_each = var.prd_aws_records.user_dns.aliases
 
