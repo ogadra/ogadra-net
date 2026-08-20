@@ -17,14 +17,7 @@ resource "aws_route53_record" "domain_ns" {
   type            = "NS"
   ttl             = 10
 
-  records = local.apex_ns_name_servers
-
-  lifecycle {
-    precondition {
-      condition     = length(distinct(local.apex_ns_name_servers)) == length(local.apex_ns_name_servers)
-      error_message = "Apex NS RRset must not contain duplicate name servers between own and peer authoritatives."
-    }
-  }
+  records = var.apex_ns_rrset
 }
 
 resource "aws_route53_zone" "bunshin" {
@@ -51,14 +44,7 @@ resource "aws_route53_record" "bunshin_apex_ns" {
   type            = "NS"
   ttl             = 10
 
-  records = local.bunshin_apex_ns_name_servers
-
-  lifecycle {
-    precondition {
-      condition     = length(distinct(local.bunshin_apex_ns_name_servers)) == length(local.bunshin_apex_ns_name_servers)
-      error_message = "Production apex NS RRset must not contain duplicate name servers between own and peer authoritatives."
-    }
-  }
+  records = var.prd_apex_ns_rrset
 }
 
 resource "aws_route53_record" "bunshin_apex_a_google_cloud" {
@@ -93,44 +79,67 @@ resource "aws_route53_record" "bunshin_apex_aaaa_google_cloud" {
 }
 
 resource "aws_route53_record" "bunshin_apex_a_aws" {
+  #checkov:skip=CKV2_AWS_23:Points to Global Accelerator static IPs managed in a separate repository
   zone_id = aws_route53_zone.bunshin.zone_id
   name    = var.prd_domain_name
   type    = "A"
+  ttl     = 10
 
   set_identifier = "aws"
   weighted_routing_policy {
     weight = var.prd_weights.aws
   }
-  health_check_id = aws_route53_health_check.bunshin_apex_aws.id
+  health_check_id = aws_route53_health_check.bunshin_apex_aws_a.id
 
-  alias {
-    name                   = local.prd_aws_apex_alias.target
-    zone_id                = local.prd_aws_apex_alias.zone_id
-    evaluate_target_health = false
-  }
+  records = local.prd_aws_apex_a_records
 }
 
 resource "aws_route53_record" "bunshin_apex_aaaa_aws" {
+  count = length(local.prd_aws_apex_aaaa_records) > 0 ? 1 : 0
+
   zone_id = aws_route53_zone.bunshin.zone_id
   name    = var.prd_domain_name
   type    = "AAAA"
+  ttl     = 10
 
   set_identifier = "aws"
   weighted_routing_policy {
     weight = var.prd_weights.aws
   }
-  health_check_id = aws_route53_health_check.bunshin_apex_aws.id
+  health_check_id = aws_route53_health_check.bunshin_apex_aws_aaaa[0].id
 
-  alias {
-    name                   = local.prd_aws_apex_alias.target
-    zone_id                = local.prd_aws_apex_alias.zone_id
-    evaluate_target_health = false
+  records = local.prd_aws_apex_aaaa_records
+}
+
+resource "aws_route53_record" "bunshin_user_dns_a" {
+  #checkov:skip=CKV2_AWS_23:Points to Global Accelerator static IPs managed in a separate repository
+  for_each = local.prd_aws_other_addresses
+
+  zone_id = aws_route53_zone.bunshin.zone_id
+  name    = each.value.name
+  type    = "A"
+  ttl     = 10
+
+  records = each.value.a_records
+}
+
+resource "aws_route53_record" "bunshin_user_dns_aaaa" {
+  for_each = {
+    for key, address in local.prd_aws_other_addresses :
+    key => address if length(coalesce(address.aaaa_records, [])) > 0
   }
+
+  zone_id = aws_route53_zone.bunshin.zone_id
+  name    = each.value.name
+  type    = "AAAA"
+  ttl     = 10
+
+  records = each.value.aaaa_records
 }
 
 resource "aws_route53_record" "bunshin_user_dns_alias_a" {
   #checkov:skip=CKV2_AWS_23:Alias targets are AWS resources managed in a separate repository
-  for_each = local.prd_aws_other_aliases
+  for_each = var.prd_aws_records.user_dns.aliases
 
   zone_id = aws_route53_zone.bunshin.zone_id
   name    = each.value.name
@@ -144,7 +153,7 @@ resource "aws_route53_record" "bunshin_user_dns_alias_a" {
 }
 
 resource "aws_route53_record" "bunshin_user_dns_alias_aaaa" {
-  for_each = local.prd_aws_other_aliases
+  for_each = var.prd_aws_records.user_dns.aliases
 
   zone_id = aws_route53_zone.bunshin.zone_id
   name    = each.value.name

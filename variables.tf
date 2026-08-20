@@ -30,9 +30,14 @@ variable "prd_google_cloud_records" {
 }
 
 variable "prd_aws_records" {
-  description = "DNS records advertised for the production subdomain from the AWS deployment (Route53 alias targets and ACM DNS validation CNAMEs)."
+  description = "DNS records advertised for the production subdomain from the AWS deployment (static IPv4 addresses, Route53 alias targets and ACM DNS validation CNAMEs)."
   type = object({
     user_dns = object({
+      addresses = map(object({
+        name         = string
+        a_records    = list(string)
+        aaaa_records = optional(list(string))
+      }))
       aliases = map(object({
         name    = string
         target  = string
@@ -44,6 +49,17 @@ variable "prd_aws_records" {
       data = string
     }))
   })
+
+  validation {
+    condition = alltrue([
+      for address in values(var.prd_aws_records.user_dns.addresses) :
+      can(regex("^(\\*\\.)?([a-zA-Z0-9_]([a-zA-Z0-9_-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,63}\\.?$", address.name))
+      && length(address.a_records) > 0
+      && alltrue([for ip in address.a_records : can(cidrhost("${ip}/32", 0)) && !strcontains(ip, ":")])
+      && alltrue([for ip in coalesce(address.aaaa_records, []) : can(cidrhost("${ip}/128", 0)) && strcontains(ip, ":")])
+    ])
+    error_message = "Each prd_aws_records.user_dns.addresses entry must have a valid DNS name (leading wildcard allowed), at least one IPv4 dotted-quad in a_records, and only IPv6 literals in aaaa_records."
+  }
 
   validation {
     condition = alltrue([
