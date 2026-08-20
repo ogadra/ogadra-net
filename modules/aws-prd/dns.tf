@@ -89,9 +89,26 @@ resource "aws_route53_record" "bunshin_apex_a_aws" {
   weighted_routing_policy {
     weight = var.prd_weights.aws
   }
-  health_check_id = aws_route53_health_check.bunshin_apex_aws.id
+  health_check_id = aws_route53_health_check.bunshin_apex_aws_a.id
 
-  records = local.prd_aws_apex_addresses
+  records = local.prd_aws_apex_a_records
+}
+
+resource "aws_route53_record" "bunshin_apex_aaaa_aws" {
+  count = length(local.prd_aws_apex_aaaa_records) > 0 ? 1 : 0
+
+  zone_id = aws_route53_zone.bunshin.zone_id
+  name    = var.prd_domain_name
+  type    = "AAAA"
+  ttl     = 10
+
+  set_identifier = "aws"
+  weighted_routing_policy {
+    weight = var.prd_weights.aws
+  }
+  health_check_id = aws_route53_health_check.bunshin_apex_aws_aaaa[0].id
+
+  records = local.prd_aws_apex_aaaa_records
 }
 
 resource "aws_route53_record" "bunshin_user_dns_a" {
@@ -103,7 +120,21 @@ resource "aws_route53_record" "bunshin_user_dns_a" {
   type    = "A"
   ttl     = 10
 
-  records = each.value.addresses
+  records = each.value.a_records
+}
+
+resource "aws_route53_record" "bunshin_user_dns_aaaa" {
+  for_each = {
+    for key, address in local.prd_aws_other_addresses :
+    key => address if length(coalesce(address.aaaa_records, [])) > 0
+  }
+
+  zone_id = aws_route53_zone.bunshin.zone_id
+  name    = each.value.name
+  type    = "AAAA"
+  ttl     = 10
+
+  records = each.value.aaaa_records
 }
 
 resource "aws_route53_record" "bunshin_user_dns_alias_a" {

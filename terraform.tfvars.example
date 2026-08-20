@@ -13,8 +13,9 @@ prd_aws_records = {
   user_dns = {
     addresses = {
       main = {
-        name      = "bunshin.example.com"
-        addresses = ["198.51.100.1", "198.51.100.2"]
+        name         = "bunshin.example.com"
+        a_records    = ["198.51.100.1", "198.51.100.2"]
+        aaaa_records = ["2001:db8:1::1", "2001:db8:2::1"]
       }
     }
     aliases = {

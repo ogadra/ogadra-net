@@ -72,7 +72,7 @@ resource "google_dns_record_set" "bunshin_apex_a" {
       weight = var.prd_weights.aws
 
       health_checked_targets {
-        external_endpoints = local.prd_aws_apex_addresses
+        external_endpoints = local.prd_aws_apex_a_records
       }
     }
 
@@ -86,6 +86,9 @@ resource "google_dns_record_set" "bunshin_apex_a" {
   }
 }
 
+# The AWS addresses are withheld from this answer: health checks on external
+# endpoints are not gating the apex A record, so adding a second target here
+# would send IPv6 clients to an endpoint Cloud DNS cannot fail away from.
 resource "google_dns_record_set" "bunshin_apex_aaaa" {
   managed_zone = google_dns_managed_zone.bunshin.name
   name         = google_dns_managed_zone.bunshin.dns_name
@@ -113,7 +116,21 @@ resource "google_dns_record_set" "bunshin_user_dns_a" {
   type         = "A"
   ttl          = 10
 
-  rrdatas = each.value.addresses
+  rrdatas = each.value.a_records
+}
+
+resource "google_dns_record_set" "bunshin_user_dns_aaaa" {
+  for_each = {
+    for key, address in local.prd_aws_other_addresses :
+    key => address if length(coalesce(address.aaaa_records, [])) > 0
+  }
+
+  managed_zone = google_dns_managed_zone.bunshin.name
+  name         = "${trimsuffix(each.value.name, ".")}."
+  type         = "AAAA"
+  ttl          = 10
+
+  rrdatas = each.value.aaaa_records
 }
 
 # Cloud DNS has no ALIAS type, so these names answer with a CNAME while Route53

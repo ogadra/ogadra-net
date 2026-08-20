@@ -75,8 +75,9 @@ variable "prd_aws_records" {
   type = object({
     user_dns = object({
       addresses = map(object({
-        name      = string
-        addresses = list(string)
+        name         = string
+        a_records    = list(string)
+        aaaa_records = optional(list(string))
       }))
       aliases = map(object({
         name    = string
