@@ -1,6 +1,11 @@
-# A routing policy carries a single health check definition that is applied to
-# every endpoint it references, so one probe covers both the AWS and the Google
-# Cloud apex answers. host pins the SNI and Host header to real apex traffic.
+# The external endpoint HTTPS prober has a TLS bug (OPENSSL_internal error) that
+# makes every endpoint fail the handshake, leaving all targets UNHEALTHY and
+# triggering fail-open — i.e. no gating at all.
+#
+# Falling back to TCP:443 loses application-level checks (503 from nginx looks
+# healthy at the TCP layer) but at least detects a network-level outage where
+# the Global Accelerator or GLB stops accepting connections. Route53 health
+# checks still gate on HTTP 2xx, so the AWS authoritative catches app failures.
 resource "google_compute_health_check" "bunshin_apex" {
   name           = "${local.prd_zone_name}-apex"
   description    = "Gates the ${var.prd_domain_name} apex weighted answers."
@@ -11,9 +16,11 @@ resource "google_compute_health_check" "bunshin_apex" {
   healthy_threshold   = 1
   unhealthy_threshold = 1
 
-  https_health_check {
-    port         = 443
-    request_path = var.prd_health_check_path
-    host         = var.prd_domain_name
+  tcp_health_check {
+    port = 443
+  }
+
+  log_config {
+    enable = true
   }
 }
