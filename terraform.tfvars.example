@@ -1,5 +1,3 @@
-google_cloud_project = "example-prd"
-
 prd_google_cloud_records = {
   a_record    = "192.0.2.1"
   aaaa_record = "2001:db8::1"

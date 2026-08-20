@@ -20,6 +20,5 @@ provider "aws" {
 }
 
 provider "google" {
-  alias   = "prd"
-  project = var.google_cloud_project
+  alias = "prd"
 }

@@ -18,6 +18,4 @@ provider "aws" {
   profile = "prd"
 }
 
-provider "google" {
-  project = var.google_cloud_project
-}
+provider "google" {}

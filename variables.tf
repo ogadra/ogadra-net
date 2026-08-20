@@ -1,13 +1,3 @@
-variable "google_cloud_project" {
-  description = "Google Cloud project hosting the Cloud DNS zones and the apex health check."
-  type        = string
-
-  validation {
-    condition     = can(regex("^[a-z][a-z0-9-]{4,28}[a-z0-9]$", var.google_cloud_project))
-    error_message = "google_cloud_project must be a valid project ID: 6 to 30 characters of lowercase letters, digits and hyphens, starting with a letter and not ending with a hyphen."
-  }
-}
-
 variable "prd_google_cloud_records" {
   description = "DNS records advertised for the production subdomain apex and ACME DNS-01 challenge CNAMEs."
   type = object({
