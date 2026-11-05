@@ -256,3 +256,13 @@ resource "aws_route53_record" "tsujiura_apex_ns" {
 
   records = var.tsujiura_apex_ns_rrset
 }
+
+resource "aws_route53_record" "tsujiura_wildcard_a" {
+  #checkov:skip=CKV2_AWS_23:Points to a TEST-NET address, not an AWS resource
+  zone_id = aws_route53_zone.tsujiura.zone_id
+  name    = "*.${var.tsujiura_domain_name}"
+  type    = "A"
+  ttl     = 10
+
+  records = [var.tsujiura_wildcard_target]
+}
