@@ -45,3 +45,14 @@ prd_weights = {
 
 tsujiura_project_id       = "example-project"
 tsujiura_terraform_member = "user:someone@example.com"
+
+tsujiura_validation_cnames = {
+  acm = {
+    name = "_example.tsujiura.example.com."
+    data = "_example.abcdefghij.acm-validations.aws."
+  }
+  google_managed = {
+    name = "_acme-challenge.tsujiura.example.com."
+    data = "example.4.authorize.certificatemanager.goog."
+  }
+}

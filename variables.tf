@@ -116,3 +116,20 @@ variable "tsujiura_terraform_member" {
     error_message = "tsujiura_terraform_member must be an IAM member such as user:someone@example.com."
   }
 }
+
+variable "tsujiura_validation_cnames" {
+  description = "ACM and Google-managed certificate DNS validation CNAMEs served from both Tsujiura zones."
+  type = map(object({
+    name = string
+    data = string
+  }))
+
+  validation {
+    condition = alltrue([
+      for cname in values(var.tsujiura_validation_cnames) :
+      can(regex("^([a-zA-Z0-9_]([a-zA-Z0-9_-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,63}\\.?$", cname.name))
+      && can(regex("^([a-zA-Z0-9_]([a-zA-Z0-9_-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,63}\\.?$", cname.data))
+    ])
+    error_message = "Each tsujiura_validation_cnames entry must have a valid FQDN for name and data."
+  }
+}

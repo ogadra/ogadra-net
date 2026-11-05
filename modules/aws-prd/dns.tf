@@ -256,3 +256,14 @@ resource "aws_route53_record" "tsujiura_apex_ns" {
 
   records = var.tsujiura_apex_ns_rrset
 }
+
+resource "aws_route53_record" "tsujiura_validation" {
+  for_each = var.tsujiura_validation_cnames
+
+  zone_id = aws_route53_zone.tsujiura.zone_id
+  name    = each.value.name
+  type    = "CNAME"
+  ttl     = 60
+
+  records = [each.value.data]
+}
