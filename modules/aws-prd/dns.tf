@@ -229,3 +229,30 @@ resource "aws_route53_record" "bunshin_region_aaaa" {
 
   records = [var.prd_google_cloud_records.aaaa_record]
 }
+
+resource "aws_route53_zone" "tsujiura" {
+  #checkov:skip=CKV2_AWS_38:Signing here alone would make resolvers reject the answers of the unsigned peer Cloud DNS zone
+  #checkov:skip=CKV2_AWS_39:Query logging is configured in the Tsujiura repository
+  name = var.tsujiura_domain_name
+
+  tags = local.tags
+}
+
+resource "aws_route53_record" "tsujiura_ns" {
+  zone_id = data.aws_route53_zone.domain.zone_id
+  name    = var.tsujiura_domain_name
+  type    = "NS"
+  ttl     = 10
+
+  records = var.tsujiura_apex_ns_rrset
+}
+
+resource "aws_route53_record" "tsujiura_apex_ns" {
+  allow_overwrite = true
+  zone_id         = aws_route53_zone.tsujiura.zone_id
+  name            = var.tsujiura_domain_name
+  type            = "NS"
+  ttl             = 10
+
+  records = var.tsujiura_apex_ns_rrset
+}
