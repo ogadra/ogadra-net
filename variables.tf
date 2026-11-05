@@ -96,3 +96,23 @@ variable "prd_weights" {
     error_message = "prd_weights must be integers between 1 and 100 (weight 0 would make NS1's weighted shuffle return an empty answer set once the other side is down)."
   }
 }
+
+variable "tsujiura_project_id" {
+  description = "Google Cloud project holding the Tsujiura Cloud DNS zone, so its query logs land in that project."
+  type        = string
+
+  validation {
+    condition     = can(regex("^[a-z][a-z0-9-]{4,28}[a-z0-9]$", var.tsujiura_project_id))
+    error_message = "tsujiura_project_id must be a valid Google Cloud project ID."
+  }
+}
+
+variable "tsujiura_terraform_member" {
+  description = "IAM member Terraform runs as, granted DNS administration on the Tsujiura project."
+  type        = string
+
+  validation {
+    condition     = can(regex("^(user|serviceAccount):.+@.+$", var.tsujiura_terraform_member))
+    error_message = "tsujiura_terraform_member must be an IAM member such as user:someone@example.com."
+  }
+}
