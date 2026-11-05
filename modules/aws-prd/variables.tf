@@ -13,6 +13,21 @@ variable "domain_name" {
   }
 }
 
+variable "apex_ns_rrset" {
+  description = "Combined apex NS RRset (own aws-prd + peer google-cloud-prd) written into this zone's apex."
+  type        = list(string)
+
+  validation {
+    condition     = length(var.apex_ns_rrset) >= 2 && length(var.apex_ns_rrset) <= 6
+    error_message = "Apex NS RRset must contain between 2 and 6 entries."
+  }
+
+  validation {
+    condition     = length(distinct(var.apex_ns_rrset)) == length(var.apex_ns_rrset)
+    error_message = "Apex NS RRset must not contain duplicates between own and peer authoritatives."
+  }
+}
+
 variable "prd_domain_name" {
   description = "Production subdomain name for the hosted zone."
   type        = string
@@ -29,7 +44,7 @@ variable "prd_domain_name" {
 }
 
 variable "prd_apex_ns_rrset" {
-  description = "Combined production subdomain apex NS RRset (own aws-prd + peer ns1) written into the parent NS delegation."
+  description = "Combined production subdomain apex NS RRset (own aws-prd + peer google-cloud-prd) written into the parent NS delegation."
   type        = list(string)
 
   validation {
@@ -56,9 +71,14 @@ variable "prd_google_cloud_records" {
 }
 
 variable "prd_aws_records" {
-  description = "DNS records advertised in the production zone from the AWS deployment (Route53 alias targets and ACM DNS validation CNAMEs)."
+  description = "DNS records advertised in the production zone from the AWS deployment (static IPv4 addresses, Route53 alias targets and ACM DNS validation CNAMEs)."
   type = object({
     user_dns = object({
+      addresses = map(object({
+        name         = string
+        a_records    = list(string)
+        aaaa_records = optional(list(string))
+      }))
       aliases = map(object({
         name    = string
         target  = string
@@ -70,6 +90,22 @@ variable "prd_aws_records" {
       data = string
     }))
   })
+
+  validation {
+    condition = length([
+      for address in values(var.prd_aws_records.user_dns.addresses) :
+      address if trimsuffix(address.name, ".") == var.prd_domain_name
+    ]) == 1
+    error_message = "prd_aws_records.user_dns.addresses must contain exactly one entry whose name matches prd_domain_name (${var.prd_domain_name}); its addresses are the AWS apex answer competing with the Google Cloud GLB via weighted records."
+  }
+
+  validation {
+    condition = length([
+      for alias in values(var.prd_aws_records.user_dns.aliases) :
+      alias if trimsuffix(alias.name, ".") == var.prd_domain_name
+    ]) == 0
+    error_message = "prd_aws_records.user_dns.aliases must not contain an entry whose name matches prd_domain_name (${var.prd_domain_name}); the apex is answered with the static IPv4 addresses instead."
+  }
 }
 
 variable "prd_weights" {

@@ -6,9 +6,9 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 6.0"
     }
-    ns1 = {
-      source  = "ns1-terraform/ns1"
-      version = "~> 2.9"
+    google = {
+      source  = "hashicorp/google"
+      version = "~> 7.0"
     }
   }
 }
@@ -18,4 +18,4 @@ provider "aws" {
   profile = "prd"
 }
 
-provider "ns1" {}
+provider "google" {}

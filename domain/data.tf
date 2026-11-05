@@ -3,6 +3,6 @@ data "aws_route53_zone" "domain" {
   private_zone = false
 }
 
-data "ns1_zone" "domain" {
-  zone = local.domain_name
+data "google_dns_managed_zone" "domain" {
+  name = replace(local.domain_name, ".", "-")
 }

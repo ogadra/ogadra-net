@@ -6,5 +6,13 @@ locals {
 
   prd_health_check_path = "/api/health"
 
-  prd_apex_ns_rrset = concat(module.aws_prd.prd_apex_name_servers)
+  apex_ns_rrset = concat(
+    module.aws_prd.apex_name_servers,
+    module.google_cloud_prd.apex_name_servers,
+  )
+
+  prd_apex_ns_rrset = concat(
+    module.aws_prd.prd_apex_name_servers,
+    module.google_cloud_prd.prd_apex_name_servers,
+  )
 }
