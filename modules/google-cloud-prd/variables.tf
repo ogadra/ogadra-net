@@ -161,6 +161,21 @@ variable "tsujiura_wildcard_target" {
   }
 }
 
+variable "tsujiura_frontend_a_rrset" {
+  description = "IPv4 addresses of the AWS and Google Cloud frontends the Tsujiura apex A record answers with."
+  type        = list(string)
+
+  validation {
+    condition     = length(var.tsujiura_frontend_a_rrset) == 3
+    error_message = "Tsujiura frontend A RRset must contain the 2 Global Accelerator IPs and the Google Cloud LB IP."
+  }
+
+  validation {
+    condition     = alltrue([for address in var.tsujiura_frontend_a_rrset : can(cidrhost("${address}/32", 0))])
+    error_message = "Each Tsujiura frontend address must be an IPv4 address."
+  }
+}
+
 variable "tsujiura_project_id" {
   description = "Google Cloud project holding the Tsujiura managed zone."
   type        = string
