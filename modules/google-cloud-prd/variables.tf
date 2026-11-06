@@ -151,6 +151,16 @@ variable "tsujiura_apex_ns_rrset" {
   }
 }
 
+variable "tsujiura_wildcard_target" {
+  description = "IPv4 address the Tsujiura wildcard A record answers with."
+  type        = string
+
+  validation {
+    condition     = can(cidrhost("${var.tsujiura_wildcard_target}/32", 0))
+    error_message = "Tsujiura wildcard target must be an IPv4 address."
+  }
+}
+
 variable "tsujiura_project_id" {
   description = "Google Cloud project holding the Tsujiura managed zone."
   type        = string
@@ -159,4 +169,21 @@ variable "tsujiura_project_id" {
 variable "tsujiura_terraform_member" {
   description = "IAM member Terraform runs as, granted DNS administration on the Tsujiura project."
   type        = string
+}
+
+variable "tsujiura_validation_cnames" {
+  description = "ACM and Google-managed certificate DNS validation CNAMEs served from both Tsujiura zones."
+  type = map(object({
+    name = string
+    data = string
+  }))
+
+  validation {
+    condition = alltrue([
+      for cname in values(var.tsujiura_validation_cnames) :
+      can(regex("^([a-zA-Z0-9_]([a-zA-Z0-9_-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,63}\\.?$", cname.name))
+      && can(regex("^([a-zA-Z0-9_]([a-zA-Z0-9_-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,63}\\.?$", cname.data))
+    ])
+    error_message = "Each tsujiura_validation_cnames entry must have a valid FQDN for name and data."
+  }
 }

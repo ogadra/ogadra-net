@@ -251,3 +251,25 @@ resource "google_dns_record_set" "tsujiura_apex_ns" {
 
   rrdatas = [for name_server in var.tsujiura_apex_ns_rrset : "${name_server}."]
 }
+
+resource "google_dns_record_set" "tsujiura_wildcard_a" {
+  project      = var.tsujiura_project_id
+  managed_zone = google_dns_managed_zone.tsujiura.name
+  name         = "*.${google_dns_managed_zone.tsujiura.dns_name}"
+  type         = "A"
+  ttl          = 10
+
+  rrdatas = [var.tsujiura_wildcard_target]
+}
+
+resource "google_dns_record_set" "tsujiura_validation" {
+  for_each = var.tsujiura_validation_cnames
+
+  project      = var.tsujiura_project_id
+  managed_zone = google_dns_managed_zone.tsujiura.name
+  name         = "${trimsuffix(each.value.name, ".")}."
+  type         = "CNAME"
+  ttl          = 60
+
+  rrdatas = ["${trimsuffix(each.value.data, ".")}."]
+}
