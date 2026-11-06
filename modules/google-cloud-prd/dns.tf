@@ -226,6 +226,10 @@ resource "google_dns_managed_zone" "tsujiura" {
   visibility  = "public"
   labels      = local.labels
 
+  cloud_logging_config {
+    enable_logging = true
+  }
+
   depends_on = [google_project_iam_member.tsujiura_dns_admin]
 }
 
