@@ -257,3 +257,15 @@ resource "google_dns_record_set" "tsujiura_wildcard_a" {
 
   rrdatas = [var.tsujiura_wildcard_target]
 }
+
+resource "google_dns_record_set" "tsujiura_validation" {
+  for_each = var.tsujiura_validation_cnames
+
+  project      = var.tsujiura_project_id
+  managed_zone = google_dns_managed_zone.tsujiura.name
+  name         = "${trimsuffix(each.value.name, ".")}."
+  type         = "CNAME"
+  ttl          = 60
+
+  rrdatas = ["${trimsuffix(each.value.data, ".")}."]
+}
