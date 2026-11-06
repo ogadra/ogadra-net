@@ -1,5 +1,6 @@
 locals {
-  tsujiura_domain_name = "tsujiura.${local.domain_name}"
+  tsujiura_domain_name     = "tsujiura.${local.domain_name}"
+  tsujiura_wildcard_target = "192.0.2.1"
 
   tsujiura_apex_ns_rrset = concat(
     module.aws_prd.tsujiura_apex_name_servers,
@@ -22,6 +23,7 @@ module "aws_prd" {
 
   tsujiura_domain_name       = local.tsujiura_domain_name
   tsujiura_apex_ns_rrset     = local.tsujiura_apex_ns_rrset
+  tsujiura_wildcard_target   = local.tsujiura_wildcard_target
   tsujiura_validation_cnames = var.tsujiura_validation_cnames
 
   providers = {
@@ -44,6 +46,7 @@ module "google_cloud_prd" {
 
   tsujiura_domain_name       = local.tsujiura_domain_name
   tsujiura_apex_ns_rrset     = local.tsujiura_apex_ns_rrset
+  tsujiura_wildcard_target   = local.tsujiura_wildcard_target
   tsujiura_validation_cnames = var.tsujiura_validation_cnames
   tsujiura_project_id        = var.tsujiura_project_id
   tsujiura_terraform_member  = var.tsujiura_terraform_member
