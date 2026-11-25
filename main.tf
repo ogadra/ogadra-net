@@ -1,3 +1,12 @@
+locals {
+  tsujiura_domain_name = "tsujiura.${local.domain_name}"
+
+  tsujiura_apex_ns_rrset = concat(
+    module.aws_prd.tsujiura_apex_name_servers,
+    module.google_cloud_prd.tsujiura_apex_name_servers,
+  )
+}
+
 module "aws_prd" {
   source = "./modules/aws-prd"
 
@@ -10,6 +19,9 @@ module "aws_prd" {
   prd_aws_records          = var.prd_aws_records
   prd_weights              = var.prd_weights
   prd_health_check_path    = local.prd_health_check_path
+
+  tsujiura_domain_name   = local.tsujiura_domain_name
+  tsujiura_apex_ns_rrset = local.tsujiura_apex_ns_rrset
 
   providers = {
     aws = aws.prd
@@ -28,6 +40,11 @@ module "google_cloud_prd" {
   prd_aws_records          = var.prd_aws_records
   prd_weights              = var.prd_weights
   prd_health_check_path    = local.prd_health_check_path
+
+  tsujiura_domain_name      = local.tsujiura_domain_name
+  tsujiura_apex_ns_rrset    = local.tsujiura_apex_ns_rrset
+  tsujiura_project_id       = var.tsujiura_project_id
+  tsujiura_terraform_member = var.tsujiura_terraform_member
 
   providers = {
     google = google.prd

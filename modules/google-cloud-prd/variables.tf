@@ -125,3 +125,38 @@ variable "prd_health_check_path" {
     error_message = "Health check path must start with a slash."
   }
 }
+
+variable "tsujiura_domain_name" {
+  description = "Tsujiura subdomain name for the managed zone."
+  type        = string
+
+  validation {
+    condition     = can(regex("^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,63}$", var.tsujiura_domain_name))
+    error_message = "Tsujiura domain name must be a valid FQDN (e.g., tsujiura.example.com)."
+  }
+}
+
+variable "tsujiura_apex_ns_rrset" {
+  description = "Combined Tsujiura apex NS RRset (own google-cloud-prd + peer aws-prd) written into the zone apex and the parent NS delegation."
+  type        = list(string)
+
+  validation {
+    condition     = length(var.tsujiura_apex_ns_rrset) == 8
+    error_message = "Tsujiura apex NS RRset must contain all 8 name servers of both providers."
+  }
+
+  validation {
+    condition     = length(distinct(var.tsujiura_apex_ns_rrset)) == length(var.tsujiura_apex_ns_rrset)
+    error_message = "Tsujiura apex NS RRset must not contain duplicates between own and peer authoritatives."
+  }
+}
+
+variable "tsujiura_project_id" {
+  description = "Google Cloud project holding the Tsujiura managed zone."
+  type        = string
+}
+
+variable "tsujiura_terraform_member" {
+  description = "IAM member Terraform runs as, granted DNS administration on the Tsujiura project."
+  type        = string
+}

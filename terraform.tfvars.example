@@ -42,3 +42,6 @@ prd_weights = {
   aws          = 50
   google_cloud = 50
 }
+
+tsujiura_project_id       = "example-project"
+tsujiura_terraform_member = "user:someone@example.com"
