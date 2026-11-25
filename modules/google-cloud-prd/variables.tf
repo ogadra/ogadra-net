@@ -151,18 +151,8 @@ variable "tsujiura_apex_ns_rrset" {
   }
 }
 
-variable "tsujiura_wildcard_target" {
-  description = "IPv4 address the Tsujiura wildcard A record answers with."
-  type        = string
-
-  validation {
-    condition     = can(cidrhost("${var.tsujiura_wildcard_target}/32", 0))
-    error_message = "Tsujiura wildcard target must be an IPv4 address."
-  }
-}
-
 variable "tsujiura_frontend_a_rrset" {
-  description = "IPv4 addresses of the AWS and Google Cloud frontends the Tsujiura apex A record answers with."
+  description = "IPv4 addresses of the AWS and Google Cloud frontends the Tsujiura apex and wildcard A records answer with."
   type        = list(string)
 
   validation {

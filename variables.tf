@@ -118,7 +118,7 @@ variable "tsujiura_terraform_member" {
 }
 
 variable "tsujiura_frontend_addresses" {
-  description = "IPv4 addresses of the Tsujiura frontends, served as the apex A record from both zones."
+  description = "IPv4 addresses of the Tsujiura frontends, served as the apex and wildcard A records from both zones."
   type = object({
     global_accelerator = list(string)
     google_cloud_lb    = string
