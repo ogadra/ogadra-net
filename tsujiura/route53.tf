@@ -1,6 +1,6 @@
 resource "aws_route53_zone" "tsujiura" {
   #checkov:skip=CKV2_AWS_38:Signing here alone would make resolvers reject the answers of the unsigned peer Cloud DNS zone
-  #checkov:skip=CKV2_AWS_39:Query logging is configured in the Tsujiura repository
+  #checkov:skip=CKV2_AWS_39:Query logging is attached to this zone outside this configuration
   name = local.tsujiura_domain_name
 
   tags = local.common_tags

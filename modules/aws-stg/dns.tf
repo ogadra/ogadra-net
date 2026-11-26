@@ -83,7 +83,7 @@ resource "aws_route53_record" "apex_aaaa_aws" {
 }
 
 resource "aws_route53_record" "user_dns_alias_a" {
-  #checkov:skip=CKV2_AWS_23:Alias targets are AWS resources managed in a separate repository
+  #checkov:skip=CKV2_AWS_23:Alias targets are AWS resources created outside this configuration
   for_each = local.stg_aws_other_aliases
 
   zone_id = aws_route53_zone.zone.zone_id
