@@ -12,4 +12,18 @@ cp tsujiura/terraform.tfvars.example tsujiura/terraform.tfvars
 gcloud auth application-default login
 ```
 
-`tsujiura.ogadra.net`以外のCloud DNSゾーンの置き場所は`.env`の`GOOGLE_PROJECT` / `GOOGLE_CLOUD_PROJECT`が決める。`google`プロバイダがこれらを直接読むため、Terraform変数としては渡していない。`tsujiura.ogadra.net`のゾーンはクエリログを専用のプロジェクトに残すため、`tsujiura/terraform.tfvars`の`tsujiura_project_id`が置き場所を決める。gcloud側は`CLOUDSDK_CORE_PROJECT` / `CLOUDSDK_CORE_ACCOUNT`を見るので、同じ値を揃えておく。
+Cloud DNSのゾーンを置くプロジェクトのIDは、ゾーンごとに次の設定に書く。
+
+- `tsujiura.ogadra.net`のゾーン
+    - `tsujiura/terraform.tfvars`の`tsujiura_project_id`
+- それ以外のゾーン
+    - `.env`の`GOOGLE_PROJECT`
+    - `.env`の`GOOGLE_CLOUD_PROJECT`
+
+`.env`の次の変数には同じIDを書く。
+
+- `GOOGLE_PROJECT`
+- `GOOGLE_CLOUD_PROJECT`
+- `CLOUDSDK_CORE_PROJECT`
+
+`CLOUDSDK_CORE_ACCOUNT`には`gcloud auth application-default login`で使うアカウントを書く。
