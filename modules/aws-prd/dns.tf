@@ -79,7 +79,7 @@ resource "aws_route53_record" "bunshin_apex_aaaa_google_cloud" {
 }
 
 resource "aws_route53_record" "bunshin_apex_a_aws" {
-  #checkov:skip=CKV2_AWS_23:Points to Global Accelerator static IPs managed in a separate repository
+  #checkov:skip=CKV2_AWS_23:Points to Global Accelerator static IPs created outside this configuration
   zone_id = aws_route53_zone.bunshin.zone_id
   name    = var.prd_domain_name
   type    = "A"
@@ -112,7 +112,7 @@ resource "aws_route53_record" "bunshin_apex_aaaa_aws" {
 }
 
 resource "aws_route53_record" "bunshin_user_dns_a" {
-  #checkov:skip=CKV2_AWS_23:Points to Global Accelerator static IPs managed in a separate repository
+  #checkov:skip=CKV2_AWS_23:Points to Global Accelerator static IPs created outside this configuration
   for_each = local.prd_aws_other_addresses
 
   zone_id = aws_route53_zone.bunshin.zone_id
@@ -138,7 +138,7 @@ resource "aws_route53_record" "bunshin_user_dns_aaaa" {
 }
 
 resource "aws_route53_record" "bunshin_user_dns_alias_a" {
-  #checkov:skip=CKV2_AWS_23:Alias targets are AWS resources managed in a separate repository
+  #checkov:skip=CKV2_AWS_23:Alias targets are AWS resources created outside this configuration
   for_each = var.prd_aws_records.user_dns.aliases
 
   zone_id = aws_route53_zone.bunshin.zone_id
