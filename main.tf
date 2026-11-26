@@ -29,6 +29,8 @@ module "google_cloud_prd" {
   prd_weights              = var.prd_weights
   prd_health_check_path    = local.prd_health_check_path
 
+  prd_acm_validation_records = module.aws_prd.prd_acm_validation_records
+
   providers = {
     google = google.prd
   }
