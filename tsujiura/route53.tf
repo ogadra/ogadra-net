@@ -36,34 +36,3 @@ resource "aws_route53_record" "tsujiura_apex_ns" {
 
   records = local.tsujiura_apex_ns_rrset
 }
-
-resource "aws_route53_record" "tsujiura_apex_a" {
-  #checkov:skip=CKV2_AWS_23:Points to Global Accelerator and Google Cloud LB IPs managed in the Tsujiura repository
-  zone_id = aws_route53_zone.tsujiura.zone_id
-  name    = local.tsujiura_domain_name
-  type    = "A"
-  ttl     = 10
-
-  records = local.tsujiura_frontend_a_rrset
-}
-
-resource "aws_route53_record" "tsujiura_wildcard_a" {
-  #checkov:skip=CKV2_AWS_23:Points to Global Accelerator and Google Cloud LB IPs managed in the Tsujiura repository
-  zone_id = aws_route53_zone.tsujiura.zone_id
-  name    = "*.${local.tsujiura_domain_name}"
-  type    = "A"
-  ttl     = 10
-
-  records = local.tsujiura_frontend_a_rrset
-}
-
-resource "aws_route53_record" "tsujiura_validation" {
-  for_each = var.tsujiura_validation_cnames
-
-  zone_id = aws_route53_zone.tsujiura.zone_id
-  name    = each.value.name
-  type    = "CNAME"
-  ttl     = 60
-
-  records = [each.value.data]
-}
