@@ -116,3 +116,24 @@ variable "tsujiura_terraform_member" {
     error_message = "tsujiura_terraform_member must be an IAM member such as user:someone@example.com."
   }
 }
+
+variable "tsujiura_frontend_addresses" {
+  description = "IPv4 addresses of the Tsujiura frontends, served as the wildcard A record from both zones."
+  type = object({
+    global_accelerator = list(string)
+    google_cloud_lb    = string
+  })
+
+  validation {
+    condition     = length(var.tsujiura_frontend_addresses.global_accelerator) == 2
+    error_message = "tsujiura_frontend_addresses.global_accelerator must contain both static IPs of the Global Accelerator."
+  }
+
+  validation {
+    condition = alltrue([
+      for address in concat(var.tsujiura_frontend_addresses.global_accelerator, [var.tsujiura_frontend_addresses.google_cloud_lb]) :
+      can(cidrhost("${address}/32", 0))
+    ])
+    error_message = "Each tsujiura_frontend_addresses entry must be a valid IPv4 dotted-quad."
+  }
+}

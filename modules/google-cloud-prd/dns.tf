@@ -255,5 +255,5 @@ resource "google_dns_record_set" "tsujiura_wildcard_a" {
   type         = "A"
   ttl          = 10
 
-  rrdatas = [var.tsujiura_wildcard_target]
+  rrdatas = var.tsujiura_frontend_a_rrset
 }

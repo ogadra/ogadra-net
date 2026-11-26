@@ -151,13 +151,18 @@ variable "tsujiura_apex_ns_rrset" {
   }
 }
 
-variable "tsujiura_wildcard_target" {
-  description = "IPv4 address the Tsujiura wildcard A record answers with."
-  type        = string
+variable "tsujiura_frontend_a_rrset" {
+  description = "IPv4 addresses of the AWS and Google Cloud frontends the Tsujiura wildcard A record answers with."
+  type        = list(string)
 
   validation {
-    condition     = can(cidrhost("${var.tsujiura_wildcard_target}/32", 0))
-    error_message = "Tsujiura wildcard target must be an IPv4 address."
+    condition     = length(var.tsujiura_frontend_a_rrset) == 3
+    error_message = "Tsujiura frontend A RRset must contain the 2 Global Accelerator IPs and the Google Cloud LB IP."
+  }
+
+  validation {
+    condition     = alltrue([for address in var.tsujiura_frontend_a_rrset : can(cidrhost("${address}/32", 0))])
+    error_message = "Each Tsujiura frontend address must be an IPv4 address."
   }
 }
 
