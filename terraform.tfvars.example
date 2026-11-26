@@ -46,6 +46,11 @@ prd_weights = {
 tsujiura_project_id       = "example-project"
 tsujiura_terraform_member = "user:someone@example.com"
 
+tsujiura_frontend_addresses = {
+  global_accelerator = ["198.51.100.1", "198.51.100.2"]
+  google_cloud_lb    = "192.0.2.1"
+}
+
 tsujiura_validation_cnames = {
   acm = {
     name = "_example.tsujiura.example.com."
