@@ -125,3 +125,11 @@ variable "prd_health_check_path" {
     error_message = "Health check path must start with a slash."
   }
 }
+
+variable "prd_acm_validation_records" {
+  description = "ACM DNS validation CNAMEs of the production certificates issued in the aws-prd module."
+  type = map(object({
+    name = string
+    data = string
+  }))
+}

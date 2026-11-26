@@ -188,6 +188,18 @@ resource "google_dns_record_set" "bunshin_user_dns_acm_validation" {
   rrdatas = ["${trimsuffix(each.value.data, ".")}."]
 }
 
+# The delegation also points at Route53, so resolvers that pick Cloud DNS must find the same validation CNAMEs here.
+resource "google_dns_record_set" "bunshin_acm_validation" {
+  for_each = var.prd_acm_validation_records
+
+  managed_zone = google_dns_managed_zone.bunshin.name
+  name         = "${trimsuffix(each.value.name, ".")}."
+  type         = "CNAME"
+  ttl          = 60
+
+  rrdatas = ["${trimsuffix(each.value.data, ".")}."]
+}
+
 resource "google_dns_record_set" "bunshin_region_a" {
   for_each = local.prd_regions
 

@@ -29,4 +29,20 @@ locals {
     for key, address in var.prd_aws_records.user_dns.addresses :
     key => address if trimsuffix(address.name, ".") != var.prd_domain_name
   }
+
+  # ACM issues one validation CNAME per domain per account, so the apex and its wildcard share it across all three certificates.
+  prd_acm_validation_records = {
+    for domain_name, records in {
+      for dvo in setunion(
+        aws_acm_certificate.bunshin_apne1.domain_validation_options,
+        aws_acm_certificate.bunshin_apne3.domain_validation_options,
+        aws_acm_certificate.bunshin_global.domain_validation_options,
+      ) :
+      trimprefix(dvo.domain_name, "*.") => {
+        name = dvo.resource_record_name
+        data = dvo.resource_record_value
+      }...
+    } :
+    domain_name => one(distinct(records))
+  }
 }
