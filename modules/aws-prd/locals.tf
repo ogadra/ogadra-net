@@ -30,7 +30,6 @@ locals {
     key => address if trimsuffix(address.name, ".") != var.prd_domain_name
   }
 
-  # ACM issues one validation CNAME per domain per account, so the apex and its wildcard share it across all three certificates.
   prd_acm_validation_records = {
     for domain_name, records in {
       for dvo in setunion(
