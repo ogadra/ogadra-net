@@ -1,5 +1,5 @@
 variable "tsujiura_project_id" {
-  description = "Google Cloud project holding the Tsujiura Cloud DNS zone, so its query logs land in that project."
+  description = "Google Cloud project holding the Tsujiura Cloud DNS zone, read to delegate tsujiura.ogadra.net."
   type        = string
 
   validation {
